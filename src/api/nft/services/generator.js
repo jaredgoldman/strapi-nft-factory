@@ -186,7 +186,6 @@ const normalizeForAlgo = (data) => {
 
 module.exports = async () => {
   try {
-    console.log("BUILDING NFTS")
     buildSetup()
     await createFiles(config.defaultEdition)
     createMetaData()
