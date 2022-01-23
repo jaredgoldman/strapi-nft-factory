@@ -161,16 +161,17 @@ const getNftBaseAssets = async (groupName = "Eyeball") => {
     fs.mkdir(layersDir, { recursive: true }, (err) => {
       if (err) console.log(err)
     })
-    const layers = await strapi.db.query(`api::layer.layer`).findMany({
-      populate: true,
-      where: {
-        group: {
-          Name: {
-            $eq: groupName,
-          },
-        },
-      },
-    })
+    const layers = await strapi.db.query(`api::layer.layer`).findMany()
+    // const layers = await strapi.db.query(`api::layer.layer`).findMany({
+    //   populate: true,
+    //   where: {
+    //     group: {
+    //       Name: {
+    //         $eq: groupName,
+    //       },
+    //     },
+    //   },
+    // })
     layers.forEach(async (layer) => {
       const layerDir = path.resolve(layersDir, layer.Name)
       fs.mkdir(layerDir, { recursive: true }, (err) => {
