@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "images",
+  "info": {
+    "singularName": "image",
+    "pluralName": "images",
+    "displayName": "Asset",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Rarity": {
+      "type": "enumeration",
+      "enum": [
+        "normal",
+        "rare",
+        "super"
+      ]
+    },
+    "Asset": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ]
+    },
+    "Name": {
+      "type": "string"
+    },
+    "layer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::layer.layer",
+      "inversedBy": "assets"
+    }
+  }
+}

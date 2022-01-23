@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "groups",
+  "info": {
+    "singularName": "group",
+    "pluralName": "groups",
+    "displayName": "Group",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Name": {
+      "type": "string"
+    },
+    "layers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::layer.layer",
+      "mappedBy": "group"
+    }
+  }
+}

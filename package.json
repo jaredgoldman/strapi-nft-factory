@@ -1,0 +1,38 @@
+{
+  "name": "nft-strapit",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A Strapi application",
+  "scripts": {
+    "dev": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "devDependencies": {
+    "prettier": "2.5.1"
+  },
+  "dependencies": {
+    "@strapi/plugin-i18n": "4.0.4",
+    "@strapi/plugin-users-permissions": "4.0.4",
+    "@strapi/strapi": "4.0.4",
+    "algosdk": "^1.13.0",
+    "axios": "^0.24.0",
+    "canvas": "^2.9.0",
+    "cors": "^2.8.5",
+    "ipfs-http-client": "^55.0.0",
+    "nft.storage": "^5.2.0",
+    "sqlite3": "5.0.2"
+  },
+  "author": {
+    "name": "A Strapi developer"
+  },
+  "strapi": {
+    "uuid": "0035a829-a811-46d8-af01-4031ce51fe4b"
+  },
+  "engines": {
+    "node": ">=12.x.x <=16.x.x",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}
