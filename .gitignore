@@ -65,7 +65,9 @@ $RECYCLE.BIN/
 # Logs and databases
 ############################
 
-.tmp/*
+.tmp/build
+.tmp/layers
+.tmp/data.db
 *.log
 *.sql
 *.sqlite
@@ -111,7 +113,6 @@ exports
 *.cache
 build
 .strapi-updater.json
-public/*
 
 ############################
 # Generator
