@@ -17,7 +17,6 @@ Icon
 
 *~
 
-
 ############################
 # Windows
 ############################
@@ -83,6 +82,7 @@ ssl
 nbproject
 public/uploads/*
 !public/uploads/.gitkeep
+package-lock.json
 
 ############################
 # Node.js
