@@ -2,7 +2,7 @@ const fs = require("fs")
 const { createCanvas, loadImage } = require("canvas")
 const console = require("console")
 const path = require("path")
-const config = require("../../../../.tmp/config.json")
+const config = require("../../../../../.tmp/config.json")
 
 const format = config.format
 const layersOrder = config.layersOrder
