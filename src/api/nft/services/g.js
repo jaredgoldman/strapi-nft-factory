@@ -187,7 +187,9 @@ const normalizeForAlgo = (data) => {
 module.exports = async () => {
   try {
     buildSetup()
+    console.log("setup built")
     await createFiles(config.defaultEdition)
+    console.log("files built")
     createMetaData()
   } catch (error) {
     console.log(error)
