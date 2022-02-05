@@ -7,7 +7,8 @@ const buildConfig = require("../services/buildConfig")
 const getBaseNftAssets = require("../services/getNftBaseAssets")
 const generateNfts = require("../services/generator")
 
-const buildDir = path.join(__dirname, "../../../../.tmp/build")
+const buildDir = path.join(__dirname, "../../../../.tmp/build/images")
+const jsonDir = path.join(__dirname, "../../../../.tmp/build/json")
 // const layersDir = path.join(__dirname, "../../../../.tmp/layers")
 // const configDir = path.join(__dirname, "../../../../.tmp/config.json")
 
@@ -54,7 +55,7 @@ const getCidLink = async (metadata) => {
 }
 
 const mintNft = async (url) => {
-  const arc69Metadata = require("../../../../.tmp/build/_metadata.json")
+  const arc69Metadata = require("../../../../.tmp/build/json/_metadata.json")
   try {
     const algodToken = {
       "X-API-Key": PURESTAKE_API,
@@ -77,7 +78,6 @@ const mintNft = async (url) => {
     const reserve = address
     const freeze = undefined
     const clawback = undefined
-    console.log(address)
 
     let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
       address,
@@ -162,6 +162,8 @@ const handleNfts = async () => {
       console.log(err)
     })
 
+    console.log(nfts)
+
     await asyncForEach(nfts, async (fileName) => {
       const nftDir = path.join(buildDir, fileName)
       // upload each nft
@@ -203,7 +205,7 @@ module.exports = {
       // await strapi.service("api::nft.get-nft-base-assets")
       console.log("***** generating nft(s) *****")
       await generateNfts()
-      // ctx.body = await handleNfts()\
+      ctx.body = await handleNfts()
     } catch (error) {
       console.log("ERROR", error)
     }
