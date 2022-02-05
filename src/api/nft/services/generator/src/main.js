@@ -60,7 +60,6 @@ const getRarityWeight = (_str) => {
 }
 
 const cleanDna = (_str) => {
-  // console.log(_str)
   const withoutOptions = removeQueryStrings(_str)
   var dna = Number(withoutOptions.split(":").shift())
   return dna

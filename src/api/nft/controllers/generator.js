@@ -8,9 +8,6 @@ const getBaseNftAssets = require("../services/getNftBaseAssets")
 const generateNfts = require("../services/generator")
 
 const buildDir = path.join(__dirname, "../../../../.tmp/build/images")
-const jsonDir = path.join(__dirname, "../../../../.tmp/build/json")
-// const layersDir = path.join(__dirname, "../../../../.tmp/layers")
-// const configDir = path.join(__dirname, "../../../../.tmp/config.json")
 
 const NFT_STORAGE_API = process.env.PROSPECTORS_API
 const PROSPECTORS_MNEMONIC = process.env.PROSPECTORS_MNEMONIC
@@ -164,11 +161,9 @@ const handleNfts = async () => {
 
     await asyncForEach(nfts, async (fileName) => {
       const nftDir = path.join(buildDir, fileName)
-      console.log(nftDir)
       // upload each nft
       console.log("***** uploading to ipfs *****")
       const metadata = await uploadNft(IFPS_METADATA, nftDir, fileName)
-      console.log("METADATA", metadata)
       // get asset url
       console.log("***** retreiving asset source *****")
       const { url } = await getCidLink(metadata)

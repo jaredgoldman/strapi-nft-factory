@@ -4,7 +4,8 @@
   "info": {
     "singularName": "config",
     "pluralName": "configs",
-    "displayName": "nft-config"
+    "displayName": "nft-config",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -19,6 +20,11 @@
     },
     "editions": {
       "type": "integer"
+    },
+    "collection": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::group.group"
     }
   }
 }

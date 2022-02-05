@@ -1,7 +1,3 @@
-// const basePath = process.cwd()
-// const { MODE } = require(`./generator/constants/blend_mode`)
-// const { NETWORK } = require(`./generator/constants/network`)
-// const network = NETWORK.eth
 const fs = require("fs")
 const path = require("path")
 const configDir = path.join(__dirname, "../../../../.tmp/config.json")
@@ -25,7 +21,7 @@ const solanaMetadata = {
 
 const shuffleLayerConfigurations = false
 
-const debugLogs = true
+const debugLogs = false
 
 const format = {
   width: 512,
@@ -87,13 +83,11 @@ const preview_gif = {
 }
 
 const buildConfig = async () => {
-  console.log("BUILDING CONFIG")
   const getLayerConfiguration = async () => {
     const layers = await strapi.db.query("api::layer.layer").findMany()
     const growEditionSizeTo = 1
     try {
       const layersArr = layers.map((layer) => {
-        console.log(layer.Name + " " + layer.layerOrder)
         return {
           name: layer.Name,
           number: layer.layerOrder,
@@ -104,8 +98,6 @@ const buildConfig = async () => {
         .map((layer) => ({
           name: layer.name,
         }))
-
-      console.log(layersOrder)
 
       return [{ growEditionSizeTo, layersOrder }]
     } catch (error) {
