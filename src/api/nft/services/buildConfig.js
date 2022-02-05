@@ -84,7 +84,20 @@ const preview_gif = {
 
 const buildConfig = async () => {
   const getLayerConfiguration = async () => {
-    const layers = await strapi.db.query("api::layer.layer").findMany()
+    const { collection } = await strapi.db.query(`api::config.config`).findOne({
+      populate: true,
+    })
+    const groupName = collection.Name
+    const layers = await strapi.db.query("api::layer.layer").findMany({
+      populate: true,
+      where: {
+        group: {
+          Name: {
+            $eq: groupName,
+          },
+        },
+      },
+    })
     const growEditionSizeTo = 1
     try {
       const layersArr = layers.map((layer) => {
