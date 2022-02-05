@@ -162,10 +162,9 @@ const handleNfts = async () => {
       console.log(err)
     })
 
-    console.log(nfts)
-
     await asyncForEach(nfts, async (fileName) => {
       const nftDir = path.join(buildDir, fileName)
+      console.log(nftDir)
       // upload each nft
       console.log("***** uploading to ipfs *****")
       const metadata = await uploadNft(IFPS_METADATA, nftDir, fileName)
