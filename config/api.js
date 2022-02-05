@@ -1,7 +1,7 @@
 module.exports = {
   rest: {
-    defaultLimit: 25,
-    maxLimit: 100,
-    withCount: true,
+    defaultLimit: undefined,
+    maxLimit: undefined,
+    withCount: false,
   },
-};
+}
