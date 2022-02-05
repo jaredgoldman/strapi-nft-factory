@@ -78,7 +78,6 @@ const mintNft = async (url) => {
     const reserve = address
     const freeze = undefined
     const clawback = undefined
-    console.log(address)
 
     let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
       address,
