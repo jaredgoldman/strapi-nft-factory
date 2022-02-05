@@ -3,9 +3,13 @@ const axios = require("axios")
 const algosdk = require("algosdk")
 const path = require("path")
 const { NFTStorage, File } = require("nft.storage")
+const buildConfig = require("../services/buildConfig")
+const getBaseNftAssets = require("../services/getNftBaseAssets")
+const generateNfts = require("../services/generator")
+
 const buildDir = path.join(__dirname, "../../../../.tmp/build")
-const layersDir = path.join(__dirname, "../../../../.tmp/layers")
-const configDir = path.join(__dirname, "../../../../.tmp/config.json")
+// const layersDir = path.join(__dirname, "../../../../.tmp/layers")
+// const configDir = path.join(__dirname, "../../../../.tmp/config.json")
 
 const NFT_STORAGE_API = process.env.PROSPECTORS_API
 const PROSPECTORS_MNEMONIC = process.env.PROSPECTORS_MNEMONIC
@@ -14,12 +18,6 @@ const ALGO_NODE = process.env.ALGO_NODE
 
 const IFPS_METADATA = {
   description: "test.png",
-}
-
-const rarityValues = {
-  normal: "",
-  rare: "_r",
-  super: "_sr",
 }
 
 const uploadNft = async (metadata, dir, fileName) => {
@@ -157,64 +155,6 @@ const waitForConfirmation = async function (algodClient, txId, timeout) {
   )
 }
 
-const getNftBaseAssets = async (groupName = "Eyeball") => {
-  try {
-    fs.mkdir(layersDir, { recursive: true }, (err) => {
-      if (err) console.log(err)
-    })
-    const layers = await strapi.db.query(`api::layer.layer`).findMany()
-    // const layers = await strapi.db.query(`api::layer.layer`).findMany({
-    //   populate: true,
-    //   where: {
-    //     group: {
-    //       Name: {
-    //         $eq: groupName,
-    //       },
-    //     },
-    //   },
-    // })
-    layers.forEach(async (layer) => {
-      const layerDir = path.resolve(layersDir, layer.Name)
-      fs.mkdir(layerDir, { recursive: true }, (err) => {
-        if (err) console.log(err)
-      })
-      const layerAssets = await strapi.db.query("api::image.image").findMany({
-        populate: true,
-        where: {
-          layer: {
-            Name: {
-              $eq: layer.Name,
-            },
-          },
-        },
-      })
-      layerAssets.forEach(async (asset) => {
-        // figure out assets rariry
-        const rarity = rarityValues[asset.Rarity]
-        // console.log(rarity)
-        // append on assetDir
-        const assetDir = path.join(
-          layersDir,
-          layer.Name,
-          `${asset.Name}${rarity}.png`
-        )
-        const source = path.resolve(
-          __dirname,
-          `../../../../public/${asset.Asset.url}`
-        )
-        const png = fs.readFileSync(source, (err) => {
-          if (err) console.log(error)
-        })
-        fs.writeFileSync(assetDir, png, (err) => {
-          if (err) console.log(err)
-        })
-      })
-    })
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 const handleNfts = async () => {
   try {
     let metadataArr = []
@@ -252,45 +192,18 @@ const asyncForEach = async (array, callback) => {
   }
 }
 
-const buildConfig = async () => {
-  // grab configuration values from db
-  const layers = await strapi.db.query("api::layer.layer").findMany()
-  const layersOrder = layers.map((layer) => {
-    return {
-      name: layer.Name,
-      number: layer.layerOrder,
-    }
-  })
-
-  const format = await strapi.db.query("api::config.config").findOne()
-  const defaultEdition = format.editions
-
-  const rarity = [
-    { key: "", val: "original" },
-    { key: "_r", val: "rare" },
-    { key: "_sr", val: "super rare" },
-  ]
-
-  const config = {
-    layersOrder,
-    format,
-    rarity,
-    defaultEdition,
-  }
-  fs.writeFile(configDir, JSON.stringify(config), (err) => {
-    if (err) console.log(err)
-  })
-}
-
 module.exports = {
   async createNft(ctx) {
     try {
-      console.log("***** grabbing config *****")
-      buildConfig()
-      await getNftBaseAssets()
+      console.log("***** building config*****")
+      await buildConfig()
+      // await strapi.service("api::nft.build-config")
+      console.log("***** config built *****")
+      await getBaseNftAssets()
+      // await strapi.service("api::nft.get-nft-base-assets")
       console.log("***** generating nft(s) *****")
-      await strapi.service("api::nft.generator")
-      ctx.body = await handleNfts()
+      await generateNfts()
+      // ctx.body = await handleNfts()\
     } catch (error) {
       console.log("ERROR", error)
     }

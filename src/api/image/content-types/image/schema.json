@@ -12,14 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Rarity": {
-      "type": "enumeration",
-      "enum": [
-        "normal",
-        "rare",
-        "super"
-      ]
-    },
     "Asset": {
       "type": "media",
       "multiple": false,
@@ -38,6 +30,10 @@
       "relation": "manyToOne",
       "target": "api::layer.layer",
       "inversedBy": "assets"
+    },
+    "Rarity": {
+      "type": "integer",
+      "required": false
     }
   }
 }

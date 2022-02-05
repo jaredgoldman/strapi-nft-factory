@@ -1,13 +1,12 @@
 const basePath = process.cwd()
-const { NETWORK } = require(`${basePath}/constants/network.js`)
+const { NETWORK } = require(`../constants/network`)
 const fs = require("fs")
 const path = require("path")
 const sha1 = require(`${basePath}/node_modules/sha1`)
-const { createCanvas, loadImage } = require(`${basePath}/node_modules/canvas`)
+const { createCanvas, loadImage } = require(`canvas`)
 
-const buildDir = path.join(__dirname, "../../../../.tmp/build")
-
-const layersDir = path.join(__dirname, "../../../../.tmp/layers")
+const buildDir = path.join(__dirname, "../../../../../../.tmp/build")
+const layersDir = path.join(__dirname, "../../../../../../.tmp/layers")
 
 const {
   format,
@@ -25,7 +24,7 @@ const {
   network,
   solanaMetadata,
   gif,
-} = require(`${basePath}/src/config.js`)
+} = require(`../../../../../../.tmp/config.json`)
 const canvas = createCanvas(format.width, format.height)
 const ctx = canvas.getContext("2d")
 ctx.imageSmoothingEnabled = format.smoothing
@@ -33,7 +32,7 @@ var metadataList = []
 var attributesList = []
 var dnaList = new Set()
 const DNA_DELIMITER = "-"
-const HashlipsGiffer = require(`${basePath}/modules/HashlipsGiffer.js`)
+const HashlipsGiffer = require(`../modules/HashlipsGiffer`)
 
 let hashlipsGiffer = null
 
@@ -61,14 +60,15 @@ const getRarityWeight = (_str) => {
 }
 
 const cleanDna = (_str) => {
+  // console.log(_str)
   const withoutOptions = removeQueryStrings(_str)
   var dna = Number(withoutOptions.split(":").shift())
   return dna
 }
 
 const cleanName = (_str) => {
-  let nameWithoutExtension = _str.slice(0, -4)
-  var nameWithoutWeight = nameWithoutExtension.split(rarityDelimiter).shift()
+  const nameWithoutExtension = _str.slice(0, -4)
+  const nameWithoutWeight = nameWithoutExtension.split(rarityDelimiter).shift()
   return nameWithoutWeight
 }
 
@@ -225,14 +225,18 @@ const drawElement = (_renderObject, _index, _layersLen) => {
 
 const constructLayerToDna = (_dna = "", _layers = []) => {
   let mappedDnaToLayers = _layers.map((layer, index) => {
-    let selectedElement = layer.elements.find(
-      (e) => e.id == cleanDna(_dna.split(DNA_DELIMITER)[index])
-    )
-    return {
-      name: layer.name,
-      blend: layer.blend,
-      opacity: layer.opacity,
-      selectedElement: selectedElement,
+    try {
+      let selectedElement = layer.elements.find((e) => {
+        return e.id === cleanDna(_dna.split(DNA_DELIMITER)[index])
+      })
+      return {
+        name: layer.name,
+        blend: layer.blend,
+        opacity: layer.opacity,
+        selectedElement: selectedElement,
+      }
+    } catch (error) {
+      console.log(error)
     }
   })
   return mappedDnaToLayers
@@ -275,7 +279,7 @@ const filterDNAOptions = (_dna) => {
  */
 const removeQueryStrings = (_dna) => {
   const query = /(\?.*$)/
-  return _dna.replace(query, "")
+  return _dna?.replace(query, "")
 }
 
 const isDnaUnique = (_DnaList = new Set(), _dna = "") => {

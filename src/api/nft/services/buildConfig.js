@@ -1,8 +1,10 @@
-const basePath = process.cwd()
-const { MODE } = require(`${basePath}/constants/blend_mode.js`)
-const { NETWORK } = require(`${basePath}/constants/network.js`)
-
-const network = NETWORK.eth
+// const basePath = process.cwd()
+// const { MODE } = require(`./generator/constants/blend_mode`)
+// const { NETWORK } = require(`./generator/constants/network`)
+// const network = NETWORK.eth
+const fs = require("fs")
+const path = require("path")
+const configDir = path.join(__dirname, "../../../../.tmp/config.json")
 
 // General metadata for Ethereum
 const namePrefix = "Your Collection"
@@ -23,7 +25,7 @@ const solanaMetadata = {
 
 const shuffleLayerConfigurations = false
 
-const debugLogs = false
+const debugLogs = true
 
 const format = {
   width: 512,
@@ -85,30 +87,41 @@ const preview_gif = {
 }
 
 const buildConfig = async () => {
-  const defaultEditionSize = 1
-  // grab configuration values from db
-  const layers = await strapi.db.query("api::layer.layer").findMany()
-  const layersArr = layers.map((layer) => {
-    return {
-      name: layer.Name,
-      number: layer.layerOrder,
-    }
-  })
+  console.log("BUILDING CONFIG")
+  const getLayerConfiguration = async () => {
+    const layers = await strapi.db.query("api::layer.layer").findMany()
+    const growEditionSizeTo = 1
+    try {
+      const layersArr = layers.map((layer) => {
+        console.log(layer.Name + " " + layer.layerOrder)
+        return {
+          name: layer.Name,
+          number: layer.layerOrder,
+        }
+      })
+      const layersOrder = layersArr
+        .sort((a, b) => a.number - b.number)
+        .map((layer) => ({
+          name: layer.name,
+        }))
 
-  const getLayerConfiguration = () => {
-    const layersOrder = layersArr
-      .sort(a, (b) => a.number + b.number)
-      .map((layer) => ({
-        name: layer.name,
-      }))
-    return { defaultEditionSize, layersOrder }
+      console.log(layersOrder)
+
+      return [{ growEditionSizeTo, layersOrder }]
+    } catch (error) {
+      console.log(error)
+    }
   }
+
+  const layerConfigurations = await getLayerConfiguration()
+
+  // TODO: add rest of config to be editable via strapi interface
 
   const config = {
     namePrefix,
     description,
     baseUri,
-    layerConfiguration: getLayerConfiguration(),
+    layerConfigurations,
     solanaMetadata,
     shuffleLayerConfigurations,
     debugLogs,
@@ -124,25 +137,24 @@ const buildConfig = async () => {
     preview_gif,
   }
 
-  fs.writeFile(configDir, JSON.stringify(config), (err) => {
+  fs.statSync(configDir, (err, stat) => {
+    if (!err) {
+      fs.unlink(configDir, (err) => {
+        if (err) console.log(err)
+      })
+    }
+    if (err) console.log(err)
+  })
+
+  fs.writeFileSync(configDir, JSON.stringify(config), (err) => {
     if (err) console.log(err)
   })
 }
 
-export default buildConfig
-
-// format,
-// baseUri,
-// description,
-// background,
-// uniqueDnaTorrance,
-// layerConfigurations,
-// rarityDelimiter,
-// shuffleLayerConfigurations,
-// debugLogs,
-// extraMetadata,
-// text,
-// namePrefix,
-// network,
-// solanaMetadata,
-// gif,
+module.exports = async () => {
+  try {
+    buildConfig()
+  } catch (error) {
+    console.log(error)
+  }
+}
