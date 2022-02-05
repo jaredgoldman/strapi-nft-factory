@@ -13,6 +13,7 @@ const getNftBaseAssets = async () => {
       (err, stat) => {
         if (!err) {
           fs.unlink(layersDir, (err) => {
+            cd
             if (err) console.log(err)
           })
         }
@@ -36,6 +37,22 @@ const getNftBaseAssets = async () => {
     layers.forEach(async (layer) => {
       const layerDir = path.resolve(layersDir, layer.Name)
 
+      const layerAssets = await strapi.db.query("api::image.image").findMany({
+        populate: true,
+        where: {
+          layer: {
+            Name: {
+              $eq: layer.Name,
+            },
+          },
+        },
+      })
+
+      // go no further if layer has no assets
+      if (!layerAssets.length) {
+        return
+      }
+
       fs.statSync(layerDir),
         (err, stat) => {
           if (!err) {
@@ -49,16 +66,7 @@ const getNftBaseAssets = async () => {
       fs.mkdir(layerDir, { recursive: true }, (err) => {
         if (err) console.log(err)
       })
-      const layerAssets = await strapi.db.query("api::image.image").findMany({
-        populate: true,
-        where: {
-          layer: {
-            Name: {
-              $eq: layer.Name,
-            },
-          },
-        },
-      })
+
       layerAssets.forEach(async (asset) => {
         // figure out assets rariry
         const rarity = asset.Rarity
