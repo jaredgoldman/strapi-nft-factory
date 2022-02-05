@@ -8,6 +8,9 @@ const getNftBaseAssets = async () => {
   })
   const groupName = collection.Name
   try {
+    fs.unlink(layersDir, (err) => {
+      if (err) console.log(err)
+    })
     fs.mkdir(layersDir, { recursive: true }, (err) => {
       if (err) console.log(err)
     })
@@ -24,16 +27,6 @@ const getNftBaseAssets = async () => {
     })
     layers.forEach(async (layer) => {
       const layerDir = path.resolve(layersDir, layer.Name)
-
-      fs.statSync(layerDir),
-        (err, stat) => {
-          if (!err) {
-            fs.unlink(layerDir, (err) => {
-              if (err) console.log(err)
-            })
-          }
-          if (err) console.log(err)
-        }
 
       fs.mkdir(layerDir, { recursive: true }, (err) => {
         if (err) console.log(err)
