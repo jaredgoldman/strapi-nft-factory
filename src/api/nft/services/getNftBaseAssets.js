@@ -53,15 +53,17 @@ const getNftBaseAssets = async () => {
         return
       }
 
-      fs.statSync(layerDir),
-        (err, stat) => {
-          if (!err) {
-            fs.unlink(layerDir, (err) => {
-              if (err) console.log(err)
-            })
+      if (fs.existsSync(layerDir)) {
+        fs.statSync(layerDir),
+          (err, stat) => {
+            if (!err) {
+              fs.unlink(layerDir, (err) => {
+                if (err) console.log(err)
+              })
+            }
+            if (err) console.log(err)
           }
-          if (err) console.log(err)
-        }
+      }
 
       fs.mkdir(layerDir, { recursive: true }, (err) => {
         if (err) console.log(err)
