@@ -2,7 +2,7 @@ const { startCreating, buildSetup } = require(`./generator/src/main`)
 
 module.exports = async () => {
   try {
-    await buildSetup()
+    buildSetup()
     await startCreating()
     return
   } catch (error) {
