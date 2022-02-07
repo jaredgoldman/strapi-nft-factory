@@ -342,7 +342,7 @@ function shuffle(array) {
 
 const startCreating = async () => {
   const { layerConfigurations } = require(`../../../../../../.tmp/config.json`)
-  console.log(layerConfigurations)
+  console.log(layerConfigurations.layersOrder)
   let layerConfigIndex = 0
   let editionCount = 1
   let failedCount = 0
