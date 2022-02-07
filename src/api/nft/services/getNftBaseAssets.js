@@ -13,7 +13,6 @@ const getNftBaseAssets = async () => {
       (err, stat) => {
         if (!err) {
           fs.unlink(layersDir, (err) => {
-            cd
             if (err) console.log(err)
           })
         }
