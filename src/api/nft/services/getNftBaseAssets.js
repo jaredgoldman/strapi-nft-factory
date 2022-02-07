@@ -3,32 +3,26 @@ const path = require("path")
 
 const layersDir = path.join(__dirname, "../../../../.tmp/layers")
 
-// const handleLayerDirCreated = () => {
-//   if (fs.existsSync(layersDir)) {
-//     fs.rmdirSync(layersDir, { recursive: true })
-//   }
-// }
+const handleLayerDirCreated = () => {
+  if (fs.existsSync(layersDir)) {
+    fs.rmdirSync(layersDir, { recursive: true })
+    fs.mkdirSync(layersDir)
+  }
+}
+
+const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
+  }
+}
 
 const getNftBaseAssets = async () => {
   const { collection } = await strapi.db.query(`api::config.config`).findOne({
     populate: true,
   })
+
   const groupName = collection.Name
   try {
-    // if layers exists already, remove it
-    fs.statSync(layersDir),
-      (err, stat) => {
-        if (!err) {
-          fs.unlink(layersDir, (err) => {
-            if (err) console.log(err)
-          })
-        }
-        if (err) console.log(err)
-      }
-
-    fs.mkdirSync(layersDir, { recursive: true }, (err) => {
-      if (err) console.log(err)
-    })
     // const layers = await strapi.db.query(`api::layer.layer`).findMany()
     const layers = await strapi.db.query(`api::layer.layer`).findMany({
       populate: true,
@@ -40,8 +34,11 @@ const getNftBaseAssets = async () => {
         },
       },
     })
-    layers.forEach(async (layer) => {
-      const layerDir = path.resolve(layersDir, layer.Name)
+
+    asyncForEach(layers, async (layer) => {
+      const layerDir = path.join(layersDir, layer.Name)
+
+      fs.mkdirSync(layerDir, { recursive: true })
 
       const layerAssets = await strapi.db.query("api::image.image").findMany({
         populate: true,
@@ -59,8 +56,7 @@ const getNftBaseAssets = async () => {
         return
       }
 
-      fs.mkdirSync(layerDir, { recursive: true })
-      layerAssets.forEach(async (asset) => {
+      asyncForEach(layerAssets, async (asset) => {
         // figure out assets rariry
         const rarity = asset.Rarity
 
@@ -75,7 +71,7 @@ const getNftBaseAssets = async () => {
           `${asset.Name}#${rarity}.png`
         )
         // create file source
-        const source = path.resolve(
+        const source = path.join(
           __dirname,
           `../../../../public/${asset.Asset.url}`
         )
@@ -96,7 +92,12 @@ const getNftBaseAssets = async () => {
 
 module.exports = async () => {
   try {
+    handleLayerDirCreated()
     await getNftBaseAssets()
+    // Wait until layers are created before proceeding
+    await new Promise((res) => {
+      setTimeout(res, 2000)
+    })
   } catch (error) {
     console.log(error)
   }

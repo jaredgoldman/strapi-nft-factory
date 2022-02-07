@@ -358,7 +358,6 @@ const startCreating = async () => {
   }
   debugLogs ? console.log("Editions left to create: ", abstractedIndexes) : null
   while (layerConfigIndex < layerConfigurations.length) {
-    console.log("does layers exist?", fs.existsSync(layersDir))
     const layers = layersSetup(
       layerConfigurations[layerConfigIndex].layersOrder
     )
