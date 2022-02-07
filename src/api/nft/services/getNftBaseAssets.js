@@ -9,9 +9,15 @@ const getNftBaseAssets = async () => {
   const groupName = collection.Name
   try {
     // if layers exists already, remove it
-    if (fs.existsSync(layersDir)) {
-      fs.rmdirSync(layersDir, { recursive: true, force: true })
-    }
+    fs.statSync(layersDir),
+      (err, stat) => {
+        if (!err) {
+          fs.unlink(layersDir, (err) => {
+            if (err) console.log(err)
+          })
+        }
+        if (err) console.log(err)
+      }
 
     fs.mkdir(layersDir, { recursive: true }, (err) => {
       if (err) console.log(err)
