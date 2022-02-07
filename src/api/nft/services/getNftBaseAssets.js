@@ -1,3 +1,4 @@
+const { group } = require("console")
 const fs = require("fs")
 const path = require("path")
 
@@ -5,7 +6,7 @@ const layersDir = path.join(__dirname, "../../../../.tmp/layers")
 
 const handleLayerDirCreated = () => {
   if (fs.existsSync(layersDir)) {
-    fs.rmdirSync(layersDir, { recursive: true })
+    fs.rmdirSync(layersDir, { recursive: true, force: true })
     fs.mkdirSync(layersDir)
   }
 }
@@ -22,6 +23,9 @@ const getNftBaseAssets = async () => {
   })
 
   const groupName = collection.Name
+
+  console.log("GROUPNAME", groupName)
+
   try {
     // const layers = await strapi.db.query(`api::layer.layer`).findMany()
     const layers = await strapi.db.query(`api::layer.layer`).findMany({
@@ -36,6 +40,7 @@ const getNftBaseAssets = async () => {
     })
 
     asyncForEach(layers, async (layer) => {
+      console.log("LAYER NAME", layer.Name)
       const layerDir = path.resolve(layersDir, layer.Name)
 
       fs.mkdirSync(layerDir, { recursive: true })
