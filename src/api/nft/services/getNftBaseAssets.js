@@ -9,15 +9,11 @@ const getNftBaseAssets = async () => {
   const groupName = collection.Name
   try {
     // if layers exists already, remove it
-    fs.statSync(layersDir),
-      (err, stat) => {
-        if (!err) {
-          fs.unlink(layersDir, (err) => {
-            if (err) console.log(err)
-          })
-        }
+    if (fs.existsSync(layersDir)) {
+      fs.unlink(layersDir, (err) => {
         if (err) console.log(err)
-      }
+      })
+    }
 
     fs.mkdir(layersDir, { recursive: true }, (err) => {
       if (err) console.log(err)
@@ -59,6 +55,11 @@ const getNftBaseAssets = async () => {
       layerAssets.forEach(async (asset) => {
         // figure out assets rariry
         const rarity = asset.Rarity
+
+        // check for valid rarity
+        if (!rarity) {
+          console.log(`${asset.Name} has no rarity assigned!`)
+        }
         // append on assetDir
         const assetDir = path.join(
           layersDir,
@@ -88,7 +89,6 @@ const getNftBaseAssets = async () => {
 module.exports = async () => {
   try {
     await getNftBaseAssets()
-    return
   } catch (error) {
     console.log(error)
   }
