@@ -14,6 +14,7 @@ const {
   description,
   background,
   uniqueDnaTorrance,
+  // layerConfigurations,
   rarityDelimiter,
   shuffleLayerConfigurations,
   debugLogs,
@@ -342,7 +343,7 @@ function shuffle(array) {
 
 const startCreating = async () => {
   const { layerConfigurations } = require(`../../../../../../.tmp/config.json`)
-  console.log(layerConfigurations[0].layersOrder)
+  // console.log(layerConfigurations[0].layersOrder)
   let layerConfigIndex = 0
   let editionCount = 1
   let failedCount = 0

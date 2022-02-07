@@ -120,6 +120,7 @@ const buildConfig = async () => {
 
   const layerConfigurations = await getLayerConfiguration()
 
+  console.log("BUILD CONFIG", layerConfigurations[0].layersOrder)
   // TODO: add rest of config to be editable via strapi interface
 
   const config = {
