@@ -10,8 +10,7 @@ const getNftBaseAssets = async () => {
   try {
     // if layers exists already, remove it
     if (fs.existsSync(layersDir)) {
-      console.log("file exists")
-      fs.unlinkSync(layersDir, (err) => {
+      fs.rmdirSync(layersDir, (err) => {
         if (err) console.log(err)
       })
     }
