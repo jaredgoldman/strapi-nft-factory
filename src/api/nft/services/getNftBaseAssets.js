@@ -53,13 +53,6 @@ const getNftBaseAssets = async () => {
         return
       }
 
-      // if layer exists from preview run, unlink
-      if (fs.existsSync(layerDir)) {
-        fs.unlink(layerDir, (err) => {
-          if (err) console.log(err)
-        })
-      }
-
       fs.mkdir(layerDir, { recursive: true }, (err) => {
         if (err) console.log(err)
       })
