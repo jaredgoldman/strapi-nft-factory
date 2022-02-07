@@ -96,7 +96,6 @@ const getNftBaseAssets = async () => {
 
 module.exports = async () => {
   try {
-    handleLayerDirCreated()
     await getNftBaseAssets()
   } catch (error) {
     console.log(error)
