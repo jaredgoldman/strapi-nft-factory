@@ -120,7 +120,7 @@ const buildConfig = async () => {
 
   const layerConfigurations = await getLayerConfiguration()
 
-  console.log("BUILD CONFIG", layerConfigurations[0].layersOrder)
+  // console.log("BUILD CONFIG", layerConfigurations[0].layersOrder)
   // TODO: add rest of config to be editable via strapi interface
 
   const config = {
@@ -143,24 +143,7 @@ const buildConfig = async () => {
     preview_gif,
   }
 
-  fs.statSync(configDir, (err, stat) => {
-    if (!err) {
-      fs.unlink(configDir, (err) => {
-        if (err) console.log(err)
-      })
-    }
-    if (err) console.log(err)
-  })
-
-  fs.writeFileSync(configDir, JSON.stringify(config), (err) => {
-    if (err) console.log(err)
-  })
+  return config
 }
 
-module.exports = async () => {
-  try {
-    buildConfig()
-  } catch (error) {
-    console.log(error)
-  }
-}
+module.exports = { buildConfig }

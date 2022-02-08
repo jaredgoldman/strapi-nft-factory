@@ -3,9 +3,9 @@ const axios = require("axios")
 const algosdk = require("algosdk")
 const path = require("path")
 const { NFTStorage, File } = require("nft.storage")
-const buildConfig = require("../services/buildConfig")
+const { buildConfig } = require("../services/buildConfig")
 const getBaseNftAssets = require("../services/getNftBaseAssets")
-const generateNfts = require("../services/generator")
+const { generateNfts } = require("../services/generator/src/main")
 
 const buildDir = path.join(__dirname, "../../../../.tmp/build/images")
 
@@ -192,13 +192,14 @@ module.exports = {
   async createNft(ctx) {
     try {
       console.log("***** building config*****")
-      await buildConfig()
+      const config = await buildConfig()
+      console.log(config)
       // await strapi.service("api::nft.build-config")
       console.log("***** config built *****")
       await getBaseNftAssets()
       // await strapi.service("api::nft.get-nft-base-assets")
       console.log("***** generating nft(s) *****")
-      await generateNfts()
+      await generateNfts(config)
       ctx.body = await handleNfts()
     } catch (error) {
       console.log("ERROR", error)
