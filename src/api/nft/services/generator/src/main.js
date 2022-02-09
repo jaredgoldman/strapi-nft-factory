@@ -31,7 +31,7 @@ const generateNfts = async (config, metadata) => {
     // preview_gif,
   } = config
 
-  const network = chain.Name || NETWORK.ETH
+  const network = chain.Code || NETWORK.ETH
 
   const canvas = createCanvas(format.width, format.height)
   const ctx = canvas.getContext("2d")
@@ -144,13 +144,13 @@ const generateNfts = async (config, metadata) => {
   const addMetadata = (_dna, _edition) => {
     let dateTime = Date.now()
     let tempMetadata
-    if (chain.Name === NETWORK.ALGO) {
+    if (network === NETWORK.ALGO) {
       tempMetadata = {
         standard: "arc69",
         description: "",
       }
     }
-    if (chain.Name === NETWORK.ETH) {
+    if (network === NETWORK.ETH) {
       tempMetadata = {
         name: `${namePrefix} #${_edition}`,
         description: description,
@@ -163,7 +163,7 @@ const generateNfts = async (config, metadata) => {
         compiler: "HashLips Art Engine",
       }
     }
-    if (chain.Name === NETWORK.SOL) {
+    if (network === NETWORK.SOL) {
       tempMetadata = {
         //Added metadata for solana
         // name: tempMetadata.name,

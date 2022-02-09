@@ -1,4 +1,5 @@
 const { NFTStorage, File } = require("nft.storage")
+const fs = require("fs")
 const NFT_STORAGE_API = process.env.PROSPECTORS_API
 
 const uploadNft = async (metadata, dir, fileName) => {

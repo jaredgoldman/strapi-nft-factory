@@ -1,8 +1,8 @@
 const algosdk = require("algosdk")
-const algosdk = require("algosdk")
 const PROSPECTORS_MNEMONIC = process.env.PROSPECTORS_MNEMONIC
 const PURESTAKE_API = process.env.PURESTAKE_API
 const ALGO_NODE = process.env.ALGO_NODE
+const { waitForConfirmation } = require("../../../utils/helpers")
 
 const mintNft = async (url) => {
   const arc69Metadata = require("../../../../.tmp/build/json/_metadata.json")

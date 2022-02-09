@@ -34,7 +34,6 @@ const getNftBaseAssets = async () => {
     })
 
     asyncForEach(layers, async (layer) => {
-      console.log("LAYER NAME", layer.Name)
       const layerDir = path.resolve(layersDir, layer.Name)
 
       fs.mkdirSync(layerDir, { recursive: true })

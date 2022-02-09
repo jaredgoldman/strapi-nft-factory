@@ -3,9 +3,10 @@ const axios = require("axios")
 const path = require("path")
 
 const { buildConfig } = require("../services/buildConfig")
-const { getBaseNftAssets } = require("../services/getNftBaseAssets")
+const { getNftBaseAssets } = require("../services/getNftBaseAssets")
 const { generateNfts } = require("../services/generator/src/main")
 const { asyncForEach } = require("../../../utils/helpers")
+const { uploadNft } = require("../services/uploadNft")
 const { mintNft } = require("../services/mintNft")
 
 const buildDir = path.join(__dirname, "../../../../.tmp/build/images")
@@ -66,7 +67,11 @@ module.exports = {
       console.log("***** building config*****")
       const config = await buildConfig()
       console.log("***** config built *****")
-      await getBaseNftAssets()
+      await getNftBaseAssets()
+      // Wait until layers are created before proceeding
+      await new Promise((res) => {
+        setTimeout(res, 2000)
+      })
       console.log("***** generating nft(s) *****")
       await generateNfts(config)
       ctx.body = await handleNfts()
