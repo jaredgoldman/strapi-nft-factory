@@ -4,7 +4,8 @@
   "info": {
     "singularName": "chain",
     "pluralName": "chains",
-    "displayName": "Chain"
+    "displayName": "Chain",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,6 +13,9 @@
   "pluginOptions": {},
   "attributes": {
     "Name": {
+      "type": "string"
+    },
+    "Code": {
       "type": "string"
     }
   }

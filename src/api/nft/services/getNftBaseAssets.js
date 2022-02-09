@@ -1,5 +1,6 @@
 const fs = require("fs")
 const path = require("path")
+const { asyncForEach } = require("../../../utils/helpers")
 
 const layersDir = path.join(__dirname, "../../../../.tmp/layers")
 
@@ -10,23 +11,17 @@ const handleLayerDirCreated = () => {
   }
 }
 
-const asyncForEach = async (array, callback) => {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array)
-  }
-}
-
 const getNftBaseAssets = async () => {
+  // Check for previously  generated layers file and delete if present
+  handleLayerDirCreated()
+
   const { collection } = await strapi.db.query(`api::config.config`).findOne({
     populate: true,
   })
 
   const groupName = collection.Name
 
-  console.log("GROUPNAME", groupName)
-
   try {
-    // const layers = await strapi.db.query(`api::layer.layer`).findMany()
     const layers = await strapi.db.query(`api::layer.layer`).findMany({
       populate: true,
       where: {
@@ -94,15 +89,14 @@ const getNftBaseAssets = async () => {
   }
 }
 
-module.exports = async () => {
-  try {
-    handleLayerDirCreated()
-    await getNftBaseAssets()
-    // Wait until layers are created before proceeding
-    await new Promise((res) => {
-      setTimeout(res, 2000)
-    })
-  } catch (error) {
-    console.log(error)
-  }
-}
+module.exports = { getNftBaseAssets }
+//   try {
+//     await getNftBaseAssets()
+//     // Wait until layers are created before proceeding
+//     await new Promise((res) => {
+//       setTimeout(res, 2000)
+//     })
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }

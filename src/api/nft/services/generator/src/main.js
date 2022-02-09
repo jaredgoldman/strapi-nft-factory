@@ -8,24 +8,30 @@ const { createCanvas, loadImage } = require(`canvas`)
 const buildDir = path.join(__dirname, "../../../../../../.tmp/build")
 const layersDir = path.join(__dirname, "../../../../../../.tmp/layers")
 
-const generateNfts = async (config) => {
+const generateNfts = async (config, metadata) => {
   const {
-    format,
-    baseUri,
+    collection,
+    chain,
+    namePrefix,
     description,
-    background,
-    uniqueDnaTorrance,
+    baseUri,
     layerConfigurations,
-    rarityDelimiter,
+    solanaMetadata,
     shuffleLayerConfigurations,
     debugLogs,
-    extraMetadata,
-    text,
-    namePrefix,
-    network,
-    solanaMetadata,
+    format,
     gif,
+    text,
+    // pixelFormat,
+    background,
+    extraMetadata,
+    rarityDelimiter,
+    uniqueDnaTorrance,
+    // preview,
+    // preview_gif,
   } = config
+
+  const network = chain.Name || NETWORK.ETH
 
   const canvas = createCanvas(format.width, format.height)
   const ctx = canvas.getContext("2d")
@@ -137,41 +143,50 @@ const generateNfts = async (config) => {
 
   const addMetadata = (_dna, _edition) => {
     let dateTime = Date.now()
-    let tempMetadata = {
-      name: `${namePrefix} #${_edition}`,
-      description: description,
-      image: `${baseUri}/${_edition}.png`,
-      dna: sha1(_dna),
-      edition: _edition,
-      date: dateTime,
-      ...extraMetadata,
-      attributes: attributesList,
-      compiler: "HashLips Art Engine",
+    let tempMetadata
+    if (chain.Name === NETWORK.ALGO) {
+      tempMetadata = {
+        standard: "arc69",
+        description: "",
+      }
     }
-    if (network == NETWORK.sol) {
+    if (chain.Name === NETWORK.ETH) {
+      tempMetadata = {
+        name: `${namePrefix} #${_edition}`,
+        description: description,
+        image: `${baseUri}/${_edition}.png`,
+        dna: sha1(_dna),
+        edition: _edition,
+        date: dateTime,
+        ...extraMetadata,
+        attributes: attributesList,
+        compiler: "HashLips Art Engine",
+      }
+    }
+    if (chain.Name === NETWORK.SOL) {
       tempMetadata = {
         //Added metadata for solana
-        name: tempMetadata.name,
-        symbol: solanaMetadata.symbol,
-        description: tempMetadata.description,
-        //Added metadata for solana
-        seller_fee_basis_points: solanaMetadata.seller_fee_basis_points,
-        image: `${_edition}.png`,
-        //Added metadata for solana
-        external_url: solanaMetadata.external_url,
-        edition: _edition,
-        ...extraMetadata,
-        attributes: tempMetadata.attributes,
-        properties: {
-          files: [
-            {
-              uri: `${_edition}.png`,
-              type: "image/png",
-            },
-          ],
-          category: "image",
-          creators: solanaMetadata.creators,
-        },
+        // name: tempMetadata.name,
+        // symbol: solanaMetadata.symbol,
+        // description: tempMetadata.description,
+        // //Added metadata for solana
+        // seller_fee_basis_points: solanaMetadata.seller_fee_basis_points,
+        // image: `${_edition}.png`,
+        // //Added metadata for solana
+        // external_url: solanaMetadata.external_url,
+        // edition: _edition,
+        // ...extraMetadata,
+        // attributes: tempMetadata.attributes,
+        // properties: {
+        //   files: [
+        //     {
+        //       uri: `${_edition}.png`,
+        //       type: "image/png",
+        //     },
+        //   ],
+        //   category: "image",
+        //   creators: solanaMetadata.creators,
+        // },
       }
     }
     metadataList.push(tempMetadata)
