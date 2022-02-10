@@ -1,10 +1,5 @@
-const fs = require("fs")
-const path = require("path")
-const configDir = path.join(__dirname, "../../../../.tmp/config.json")
-
 // General metadata for Ethereum
 const namePrefix = "Your Collection"
-const description = "Remember to replace this description"
 const baseUri = "ipfs://NewUriToReplace"
 
 const solanaMetadata = {
@@ -82,48 +77,53 @@ const preview_gif = {
   imageName: "preview.gif",
 }
 
-const buildConfig = async () => {
-  const getLayerConfiguration = async () => {
-    const { collection } = await strapi.db.query(`api::config.config`).findOne({
-      populate: true,
-    })
-    const groupName = collection.Name
-    const layers = await strapi.db.query("api::layer.layer").findMany({
-      populate: true,
-      where: {
-        group: {
-          Name: {
-            $eq: groupName,
-          },
+const getLayerConfiguration = async (collection) => {
+  const groupName = collection.Name
+  const layers = await strapi.db.query("api::layer.layer").findMany({
+    populate: true,
+    where: {
+      group: {
+        Name: {
+          $eq: groupName,
         },
       },
+    },
+  })
+  const growEditionSizeTo = 1
+  try {
+    const layersArr = layers.map((layer) => {
+      return {
+        name: layer.Name,
+        number: layer.layerOrder,
+      }
     })
-    const growEditionSizeTo = 1
-    try {
-      const layersArr = layers.map((layer) => {
-        return {
-          name: layer.Name,
-          number: layer.layerOrder,
-        }
-      })
-      const layersOrder = layersArr
-        .sort((a, b) => a.number - b.number)
-        .map((layer) => ({
-          name: layer.name,
-        }))
+    const layersOrder = layersArr
+      .sort((a, b) => a.number - b.number)
+      .map((layer) => ({
+        name: layer.name,
+      }))
 
-      return [{ growEditionSizeTo, layersOrder }]
-    } catch (error) {
-      console.log(error)
-    }
+    return [{ growEditionSizeTo, layersOrder }]
+  } catch (error) {
+    console.log(error)
   }
+}
 
-  const layerConfigurations = await getLayerConfiguration()
+const buildConfig = async () => {
+  const { collection, chain, description } = await strapi.db
+    .query(`api::config.config`)
+    .findOne({
+      populate: true,
+    })
 
-  // console.log("BUILD CONFIG", layerConfigurations[0].layersOrder)
+  const layerConfigurations = await getLayerConfiguration(collection)
+
   // TODO: add rest of config to be editable via strapi interface
 
   const config = {
+    collection,
+    chain,
+    description,
     namePrefix,
     description,
     baseUri,

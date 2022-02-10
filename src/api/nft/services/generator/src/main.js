@@ -10,21 +10,22 @@ const layersDir = path.join(__dirname, "../../../../../../.tmp/layers")
 
 const generateNfts = async (config) => {
   const {
-    format,
-    baseUri,
+    namePrefix,
     description,
-    background,
-    uniqueDnaTorrance,
+    baseUri,
     layerConfigurations,
-    rarityDelimiter,
     shuffleLayerConfigurations,
     debugLogs,
-    extraMetadata,
-    text,
-    namePrefix,
-    network,
-    solanaMetadata,
+    format,
     gif,
+    text,
+    // pixelFormat,
+    background,
+    extraMetadata,
+    rarityDelimiter,
+    uniqueDnaTorrance,
+    // preview,
+    // preview_gif,
   } = config
 
   const canvas = createCanvas(format.width, format.height)
@@ -137,7 +138,7 @@ const generateNfts = async (config) => {
 
   const addMetadata = (_dna, _edition) => {
     let dateTime = Date.now()
-    let tempMetadata = {
+    const tempMetadata = {
       name: `${namePrefix} #${_edition}`,
       description: description,
       image: `${baseUri}/${_edition}.png`,
@@ -147,32 +148,6 @@ const generateNfts = async (config) => {
       ...extraMetadata,
       attributes: attributesList,
       compiler: "HashLips Art Engine",
-    }
-    if (network == NETWORK.sol) {
-      tempMetadata = {
-        //Added metadata for solana
-        name: tempMetadata.name,
-        symbol: solanaMetadata.symbol,
-        description: tempMetadata.description,
-        //Added metadata for solana
-        seller_fee_basis_points: solanaMetadata.seller_fee_basis_points,
-        image: `${_edition}.png`,
-        //Added metadata for solana
-        external_url: solanaMetadata.external_url,
-        edition: _edition,
-        ...extraMetadata,
-        attributes: tempMetadata.attributes,
-        properties: {
-          files: [
-            {
-              uri: `${_edition}.png`,
-              type: "image/png",
-            },
-          ],
-          category: "image",
-          creators: solanaMetadata.creators,
-        },
-      }
     }
     metadataList.push(tempMetadata)
     attributesList = []
@@ -314,9 +289,9 @@ const generateNfts = async (config) => {
     return randNum.join(DNA_DELIMITER)
   }
 
-  const writeMetaData = (_data) => {
-    fs.writeFileSync(`${buildDir}/json/_metadata.json`, _data)
-  }
+  // const writeMetaData = (_data) => {
+  //   fs.writeFileSync(`${buildDir}/json/_metadata.json`, _data)
+  // }
 
   const saveMetaDataSingleFile = (_editionCount) => {
     let metadata = metadataList.find((meta) => meta.edition == _editionCount)
@@ -351,7 +326,7 @@ const generateNfts = async (config) => {
     let failedCount = 0
     let abstractedIndexes = []
     for (
-      let i = network == NETWORK.sol ? 0 : 1;
+      let i = 1;
       i <=
       layerConfigurations[layerConfigurations.length - 1].growEditionSizeTo;
       i++
@@ -439,11 +414,12 @@ const generateNfts = async (config) => {
       }
       layerConfigIndex++
     }
-    writeMetaData(JSON.stringify(metadataList, null, 2))
+    // writeMetaData(JSON.stringify(metadataList, null, 2))
   }
 
   buildSetup()
   await startCreating()
+  return metadataList
 }
 
 module.exports = { generateNfts }
