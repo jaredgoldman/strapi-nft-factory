@@ -80,15 +80,17 @@ module.exports = {
       const config = await buildConfig()
 
       console.log("***** config built *****")
-      await getNftBaseAssets()
+      await getNftBaseAssets(config)
 
       // Wait until layers are created before proceeding
       await wait(1000)
 
       console.log("***** generating nft(s) *****")
       const metadataArr = await generateNfts(config)
+
       console.log("***** processing metadata *****")
       const processedMetadata = processMetadata(config, metadataArr)
+
       ctx.body = await uploadAndMint(processedMetadata)
     } catch (error) {
       console.log("ERROR", error)

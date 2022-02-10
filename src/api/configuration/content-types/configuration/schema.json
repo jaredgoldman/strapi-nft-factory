@@ -1,0 +1,154 @@
+{
+  "kind": "collectionType",
+  "collectionName": "configurations",
+  "info": {
+    "singularName": "configuration",
+    "pluralName": "configurations",
+    "displayName": "Configuration",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "collection": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::group.group",
+      "inversedBy": "configuration"
+    },
+    "collection_name": {
+      "type": "string"
+    },
+    "shuffle_layer_configurations": {
+      "type": "boolean",
+      "default": false
+    },
+    "debug_logs": {
+      "type": "boolean",
+      "default": false
+    },
+    "width": {
+      "type": "integer",
+      "default": 512
+    },
+    "height": {
+      "type": "integer",
+      "default": 512
+    },
+    "chain": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::chain.chain"
+    },
+    "background": {
+      "type": "boolean",
+      "default": false
+    },
+    "background_color": {
+      "type": "string",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+      "default": "#000000"
+    },
+    "extra_metadata": {
+      "type": "json"
+    },
+    "background_brightness": {
+      "type": "integer",
+      "max": 100,
+      "default": 80
+    },
+    "static_background": {
+      "type": "boolean",
+      "default": false
+    },
+    "export_gif": {
+      "type": "boolean",
+      "default": false
+    },
+    "gif_repeat": {
+      "type": "integer",
+      "default": 0
+    },
+    "gif_quality": {
+      "type": "integer",
+      "max": 100,
+      "default": 100
+    },
+    "gif_delay": {
+      "type": "integer",
+      "default": 500
+    },
+    "text": {
+      "type": "boolean",
+      "default": false
+    },
+    "text_color": {
+      "type": "string",
+      "regex": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+      "default": "#ffffff"
+    },
+    "text_size": {
+      "type": "integer",
+      "default": 20
+    },
+    "text_x_gap": {
+      "type": "integer",
+      "default": 40
+    },
+    "text_y_gap": {
+      "type": "integer",
+      "default": 40
+    },
+    "text_align": {
+      "type": "enumeration",
+      "enum": [
+        "left",
+        "center",
+        "right"
+      ],
+      "default": "center"
+    },
+    "text_baseline": {
+      "type": "enumeration",
+      "enum": [
+        "top",
+        "center",
+        "bottom"
+      ],
+      "default": "center"
+    },
+    "text_weight": {
+      "type": "enumeration",
+      "enum": [
+        "light",
+        "regular",
+        "bold"
+      ],
+      "default": "regular"
+    },
+    "text_family": {
+      "type": "string",
+      "default": "Courier"
+    },
+    "text_spacer": {
+      "type": "string",
+      "default": " => "
+    },
+    "unique_dna_torrance": {
+      "type": "integer",
+      "default": 10000
+    },
+    "smoothing": {
+      "type": "boolean",
+      "default": false
+    },
+    "project_url": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  }
+}
