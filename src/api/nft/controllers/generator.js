@@ -5,16 +5,18 @@ const path = require("path")
 const { buildConfig } = require("../services/buildConfig")
 const { getNftBaseAssets } = require("../services/getNftBaseAssets")
 const { generateNfts } = require("../services/generator/src/main")
-const { asyncForEach } = require("../../../utils/helpers")
+const { asyncForEach, wait } = require("../../../utils/helpers")
 const { uploadNft } = require("../services/uploadNft")
 const { mintNft } = require("../services/mintNft")
+const { processMetadata } = require("../services/processMetadata")
 
 const buildDir = path.join(__dirname, "../../../../.tmp/build/images")
 
-const IFPS_METADATA = {
-  description: "test.png",
-}
-
+/**
+ * Gets link to actual asset from IFPS
+ * @param {Object}} metadata
+ * @return {Object} sum
+ */
 const getAssetData = async (metadata) => {
   try {
     const { data } = await axios.get(
@@ -31,24 +33,34 @@ const getAssetData = async (metadata) => {
   }
 }
 
-const handleNfts = async () => {
+/**
+ * Uploads and mints each NFT
+ * @param {Array} metadata``
+ * @return {Array} metadataArr
+ */
+const uploadAndMint = async (metadata) => {
   try {
-    let metadataArr = []
+    const metadataArr = []
     const nfts = fs.readdirSync(buildDir, (err) => {
       console.log(err)
     })
 
-    await asyncForEach(nfts, async (fileName) => {
+    await asyncForEach(nfts, async (fileName, i) => {
       const nftDir = path.join(buildDir, fileName)
+      const assetMetadata = metadata[i]
+
       // upload each nft
       console.log("***** uploading to ipfs *****")
-      const metadata = await uploadNft(IFPS_METADATA, nftDir, fileName)
-      // get asset url
+      const ifpsMetadata = await uploadNft(assetMetadata, nftDir, fileName)
+
+      // get asset url1
       console.log("***** retreiving asset source *****")
-      const { url } = await getAssetData(metadata)
+      const { url } = await getAssetData(ifpsMetadata)
+
       // // mint nft with data
       console.log("***** minting nft *****")
-      const assetId = await mintNft(url)
+      const assetId = await mintNft(url, metadata)
+
       console.log("***** nft minted! *****")
       metadataArr.push({
         url,
@@ -66,15 +78,18 @@ module.exports = {
     try {
       console.log("***** building config*****")
       const config = await buildConfig()
+
       console.log("***** config built *****")
       await getNftBaseAssets()
+
       // Wait until layers are created before proceeding
-      await new Promise((res) => {
-        setTimeout(res, 2000)
-      })
+      await wait(1000)
+
       console.log("***** generating nft(s) *****")
-      await generateNfts(config)
-      ctx.body = await handleNfts()
+      const metadataArr = await generateNfts(config)
+      console.log("***** processing metadata *****")
+      const processedMetadata = processMetadata(config, metadataArr)
+      ctx.body = await uploadAndMint(processedMetadata)
     } catch (error) {
       console.log("ERROR", error)
     }

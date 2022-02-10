@@ -8,15 +8,12 @@ const { createCanvas, loadImage } = require(`canvas`)
 const buildDir = path.join(__dirname, "../../../../../../.tmp/build")
 const layersDir = path.join(__dirname, "../../../../../../.tmp/layers")
 
-const generateNfts = async (config, metadata) => {
+const generateNfts = async (config) => {
   const {
-    collection,
-    chain,
     namePrefix,
     description,
     baseUri,
     layerConfigurations,
-    solanaMetadata,
     shuffleLayerConfigurations,
     debugLogs,
     format,
@@ -30,8 +27,6 @@ const generateNfts = async (config, metadata) => {
     // preview,
     // preview_gif,
   } = config
-
-  const network = chain.Code || NETWORK.ETH
 
   const canvas = createCanvas(format.width, format.height)
   const ctx = canvas.getContext("2d")
@@ -143,51 +138,16 @@ const generateNfts = async (config, metadata) => {
 
   const addMetadata = (_dna, _edition) => {
     let dateTime = Date.now()
-    let tempMetadata
-    if (network === NETWORK.ALGO) {
-      tempMetadata = {
-        standard: "arc69",
-        description: "",
-      }
-    }
-    if (network === NETWORK.ETH) {
-      tempMetadata = {
-        name: `${namePrefix} #${_edition}`,
-        description: description,
-        image: `${baseUri}/${_edition}.png`,
-        dna: sha1(_dna),
-        edition: _edition,
-        date: dateTime,
-        ...extraMetadata,
-        attributes: attributesList,
-        compiler: "HashLips Art Engine",
-      }
-    }
-    if (network === NETWORK.SOL) {
-      tempMetadata = {
-        //Added metadata for solana
-        // name: tempMetadata.name,
-        // symbol: solanaMetadata.symbol,
-        // description: tempMetadata.description,
-        // //Added metadata for solana
-        // seller_fee_basis_points: solanaMetadata.seller_fee_basis_points,
-        // image: `${_edition}.png`,
-        // //Added metadata for solana
-        // external_url: solanaMetadata.external_url,
-        // edition: _edition,
-        // ...extraMetadata,
-        // attributes: tempMetadata.attributes,
-        // properties: {
-        //   files: [
-        //     {
-        //       uri: `${_edition}.png`,
-        //       type: "image/png",
-        //     },
-        //   ],
-        //   category: "image",
-        //   creators: solanaMetadata.creators,
-        // },
-      }
+    const tempMetadata = {
+      name: `${namePrefix} #${_edition}`,
+      description: description,
+      image: `${baseUri}/${_edition}.png`,
+      dna: sha1(_dna),
+      edition: _edition,
+      date: dateTime,
+      ...extraMetadata,
+      attributes: attributesList,
+      compiler: "HashLips Art Engine",
     }
     metadataList.push(tempMetadata)
     attributesList = []
@@ -329,9 +289,9 @@ const generateNfts = async (config, metadata) => {
     return randNum.join(DNA_DELIMITER)
   }
 
-  const writeMetaData = (_data) => {
-    fs.writeFileSync(`${buildDir}/json/_metadata.json`, _data)
-  }
+  // const writeMetaData = (_data) => {
+  //   fs.writeFileSync(`${buildDir}/json/_metadata.json`, _data)
+  // }
 
   const saveMetaDataSingleFile = (_editionCount) => {
     let metadata = metadataList.find((meta) => meta.edition == _editionCount)
@@ -366,7 +326,7 @@ const generateNfts = async (config, metadata) => {
     let failedCount = 0
     let abstractedIndexes = []
     for (
-      let i = network == NETWORK.sol ? 0 : 1;
+      let i = 1;
       i <=
       layerConfigurations[layerConfigurations.length - 1].growEditionSizeTo;
       i++
@@ -454,11 +414,12 @@ const generateNfts = async (config, metadata) => {
       }
       layerConfigIndex++
     }
-    writeMetaData(JSON.stringify(metadataList, null, 2))
+    // writeMetaData(JSON.stringify(metadataList, null, 2))
   }
 
   buildSetup()
   await startCreating()
+  return metadataList
 }
 
 module.exports = { generateNfts }

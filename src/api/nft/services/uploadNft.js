@@ -5,6 +5,7 @@ const NFT_STORAGE_API = process.env.PROSPECTORS_API
 const uploadNft = async (metadata, dir, fileName) => {
   try {
     const { description } = metadata
+    console.log(description)
     const fileType = "png"
     const client = new NFTStorage({ token: NFT_STORAGE_API })
     return await client.store({

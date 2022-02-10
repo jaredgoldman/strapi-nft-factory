@@ -30,6 +30,12 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::chain.chain"
+    },
+    "description": {
+      "type": "string"
+    },
+    "external_url": {
+      "type": "string"
     }
   }
 }

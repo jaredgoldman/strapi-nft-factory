@@ -1,6 +1,5 @@
 // General metadata for Ethereum
 const namePrefix = "Your Collection"
-const description = "Remember to replace this description"
 const baseUri = "ipfs://NewUriToReplace"
 
 const solanaMetadata = {
@@ -111,7 +110,7 @@ const getLayerConfiguration = async (collection) => {
 }
 
 const buildConfig = async () => {
-  const { collection, chain } = await strapi.db
+  const { collection, chain, description } = await strapi.db
     .query(`api::config.config`)
     .findOne({
       populate: true,
@@ -124,6 +123,7 @@ const buildConfig = async () => {
   const config = {
     collection,
     chain,
+    description,
     namePrefix,
     description,
     baseUri,

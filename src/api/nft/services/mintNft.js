@@ -4,8 +4,7 @@ const PURESTAKE_API = process.env.PURESTAKE_API
 const ALGO_NODE = process.env.ALGO_NODE
 const { waitForConfirmation } = require("../../../utils/helpers")
 
-const mintNft = async (url) => {
-  const arc69Metadata = require("../../../../.tmp/build/json/_metadata.json")
+const mintNft = async (url, metadata) => {
   try {
     const algodToken = {
       "X-API-Key": PURESTAKE_API,
@@ -17,7 +16,7 @@ const mintNft = async (url) => {
       algosdk.mnemonicToSecretKey(PROSPECTORS_MNEMONIC)
     const params = await algodClient.getTransactionParams().do()
     const enc = new TextEncoder()
-    const note = enc.encode(JSON.stringify({ arc69Metadata }))
+    const note = enc.encode(JSON.stringify({ metadata }))
     const defaultFrozen = false
     const decimals = 0
     const totalIssuance = 1

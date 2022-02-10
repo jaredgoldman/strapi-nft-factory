@@ -51,7 +51,14 @@ const waitForConfirmation = async function (algodClient, txId, timeout) {
   )
 }
 
+const wait = async (duration) => {
+  await new Promise((res) => {
+    setTimeout(res, duration)
+  })
+}
+
 module.exports = {
   asyncForEach,
   waitForConfirmation,
+  wait,
 }
