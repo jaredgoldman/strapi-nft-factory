@@ -80,7 +80,7 @@ module.exports = {
       const config = await buildConfig()
 
       console.log("***** config built *****")
-      await getNftBaseAssets()
+      await getNftBaseAssets(config)
 
       // Wait until layers are created before proceeding
       await wait(1000)

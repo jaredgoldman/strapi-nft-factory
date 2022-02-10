@@ -11,15 +11,11 @@ const handleLayerDirCreated = () => {
   }
 }
 
-const getNftBaseAssets = async () => {
+const getNftBaseAssets = async (config) => {
   // Check for previously  generated layers file and delete if present
   handleLayerDirCreated()
 
-  const { collection } = await strapi.db.query(`api::config.config`).findOne({
-    populate: true,
-  })
-
-  const groupName = collection.Name
+  const groupName = config.collection
 
   try {
     const layers = await strapi.db.query(`api::layer.layer`).findMany({
