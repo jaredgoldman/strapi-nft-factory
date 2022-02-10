@@ -1,72 +1,4 @@
-// General metadata for Ethereum
-const namePrefix = "Your Collection"
-const baseUri = "ipfs://NewUriToReplace"
-
-const solanaMetadata = {
-  symbol: "YC",
-  seller_fee_basis_points: 1000, // Define how much % you want from secondary market sales 1000 = 10%
-  external_url: "https://www.youtube.com/c/hashlipsnft",
-  creators: [
-    {
-      address: "7fXNuer5sbZtaTEPhtJ5g5gNtuyRoKkvxdjEjEnPN4mC",
-      share: 100,
-    },
-  ],
-}
-
-const shuffleLayerConfigurations = false
-
-const debugLogs = false
-
-const format = {
-  width: 512,
-  height: 512,
-  smoothing: false,
-}
-
-const gif = {
-  export: false,
-  repeat: 0,
-  quality: 100,
-  delay: 500,
-}
-
-const text = {
-  only: false,
-  color: "#ffffff",
-  size: 20,
-  xGap: 40,
-  yGap: 40,
-  align: "left",
-  baseline: "top",
-  weight: "regular",
-  family: "Courier",
-  spacer: " => ",
-}
-
-const pixelFormat = {
-  ratio: 2 / 128,
-}
-
-const background = {
-  generate: true,
-  brightness: "80%",
-  static: false,
-  default: "#000000",
-}
-
-const extraMetadata = {}
-
 const rarityDelimiter = "#"
-
-const uniqueDnaTorrance = 10000
-
-const preview = {
-  thumbPerRow: 5,
-  thumbWidth: 50,
-  imageRatio: format.height / format.width,
-  imageName: "preview.png",
-}
 
 const preview_gif = {
   numberOfImages: 5,
@@ -77,14 +9,13 @@ const preview_gif = {
   imageName: "preview.gif",
 }
 
-const getLayerConfiguration = async (collection) => {
-  const groupName = collection.Name
+const getLayerConfiguration = async (collectionName) => {
   const layers = await strapi.db.query("api::layer.layer").findMany({
     populate: true,
     where: {
       group: {
         Name: {
-          $eq: groupName,
+          $eq: collectionName,
         },
       },
     },
@@ -109,41 +40,127 @@ const getLayerConfiguration = async (collection) => {
   }
 }
 
-const buildConfig = async () => {
-  const { collection, chain, description } = await strapi.db
-    .query(`api::config.config`)
+const getConfigData = async () => {
+  // get global config
+  const { configuration } = await strapi.db
+    .query(`api::generator-config.generator-config`)
     .findOne({
       populate: true,
     })
+  // query configs for populated config
+  return await strapi.db.query("api::configuration.configuration").findOne({
+    populate: true,
+    where: {
+      id: configuration.id,
+    },
+  })
+}
 
-  const layerConfigurations = await getLayerConfiguration(collection)
-
-  // TODO: add rest of config to be editable via strapi interface
-
-  const config = {
+const buildConfig = async () => {
+  const config = await getConfigData()
+  const {
     collection,
+    shuffle_layer_configurations,
+    description,
+    debug_logs,
+    width,
+    height,
+    smoothing,
+    export_gif,
+    gif_repeat,
+    gif_quality,
+    gif_delay,
+    text,
+    text_color,
+    text_size,
+    text_x_gap,
+    text_y_gap,
+    text_align,
+    text_baseline,
+    text_weight,
+    text_family,
+    text_spacer,
+    background,
+    background_brightness,
+    static_background,
+    background_color,
+    unique_dna_torrance,
+    extra_metadata,
+    collection_name,
+    project_url,
+    chain,
+  } = config
+  const collectionName = collection.Name
+  const layerConfigurations = await getLayerConfiguration(collectionName)
+  const backgroundBrightness = `${background_brightness.toString()}%`
+
+  const format = {
+    width,
+    height,
+    smoothing,
+  }
+
+  const preview = {
+    thumbPerRow: 5,
+    thumbWidth: 50,
+    imageRatio: format.height / format.width,
+    imageName: "preview.png",
+  }
+
+  const gif = {
+    export: export_gif,
+    repeat: gif_repeat,
+    quality: gif_quality,
+    delay: gif_delay,
+  }
+
+  const textData = {
+    only: text,
+    color: text_color,
+    size: text_size,
+    xGap: text_x_gap,
+    yGap: text_y_gap,
+    align: text_align,
+    baseline: text_baseline,
+    weight: text_weight,
+    family: text_family,
+    spacer: text_spacer,
+  }
+
+  const pixelFormat = {
+    ratio: 2 / 128,
+  }
+
+  const backgroundData = {
+    generate: background,
+    brightness: backgroundBrightness,
+    static: static_background,
+    default: background_color,
+  }
+
+  const uniqueDnaTorrance = unique_dna_torrance
+  const extraMetadata = extra_metadata
+  return {
+    collection: collectionName,
     chain,
     description,
-    namePrefix,
+    namePrefix: collection_name,
     description,
-    baseUri,
+    baseUri: project_url,
     layerConfigurations,
-    solanaMetadata,
-    shuffleLayerConfigurations,
-    debugLogs,
+    shuffleLayerConfigurations: shuffle_layer_configurations,
+    debugLogs: debug_logs,
     format,
     gif,
-    text,
+    text: textData,
     pixelFormat,
-    background,
+    background: backgroundData,
     extraMetadata,
     rarityDelimiter,
     uniqueDnaTorrance,
     preview,
     preview_gif,
   }
-
-  return config
 }
 
 module.exports = { buildConfig }

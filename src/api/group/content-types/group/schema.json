@@ -20,6 +20,12 @@
       "relation": "oneToMany",
       "target": "api::layer.layer",
       "mappedBy": "group"
+    },
+    "configuration": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::configuration.configuration",
+      "mappedBy": "collection"
     }
   }
 }

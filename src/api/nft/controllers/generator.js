@@ -87,8 +87,10 @@ module.exports = {
 
       console.log("***** generating nft(s) *****")
       const metadataArr = await generateNfts(config)
+
       console.log("***** processing metadata *****")
       const processedMetadata = processMetadata(config, metadataArr)
+
       ctx.body = await uploadAndMint(processedMetadata)
     } catch (error) {
       console.log("ERROR", error)

@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "generator_configs",
+  "info": {
+    "singularName": "generator-config",
+    "pluralName": "generator-configs",
+    "displayName": "generator_config"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "configuration": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::configuration.configuration"
+    }
+  }
+}
