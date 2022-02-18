@@ -4,21 +4,19 @@
   "info": {
     "singularName": "nft",
     "pluralName": "nfts",
-    "displayName": "nft"
+    "displayName": "nft",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "image": {
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos"
-      ],
-      "type": "media",
-      "multiple": false
+    "url": {
+      "type": "string"
+    },
+    "file_name": {
+      "type": "string"
     }
   }
 }

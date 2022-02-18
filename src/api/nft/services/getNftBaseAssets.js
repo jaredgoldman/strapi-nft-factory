@@ -85,13 +85,3 @@ const getNftBaseAssets = async (config) => {
 }
 
 module.exports = { getNftBaseAssets }
-//   try {
-//     await getNftBaseAssets()
-//     // Wait until layers are created before proceeding
-//     await new Promise((res) => {
-//       setTimeout(res, 2000)
-//     })
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }

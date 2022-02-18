@@ -149,6 +149,10 @@
     },
     "description": {
       "type": "string"
+    },
+    "save_asset": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
