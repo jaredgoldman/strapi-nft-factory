@@ -73,6 +73,9 @@ const uploadAndMint = async (config, metadata) => {
       console.log("***** retreiving asset source *****")
       const { url } = await getAssetData(ifpsMetadata)
 
+      if (!url) {
+        // TODO - throw error as dweb isn't working
+      }
       // // mint nft with data
       console.log("***** minting nft *****")
       const assetId = await mintNft(url, metadata)
@@ -112,20 +115,20 @@ const uploadAndMint = async (config, metadata) => {
 const userCache = {}
 
 /**
- * Cache user as to limit interaction
+ * Cache/debounce user as to limit interaction
  * @param {String} userReferer
  * @return {Boolean}
  */
 const cacheUser = (userReferer) => {
-  if (userCache[user]) {
+  if (userCache[userReferer]) {
     // if user has requested service within the last 10 minutes, return false
-    if (userCache[userReferer] + 300 < Date.now()) {
-      return false
+    if (userCache[userReferer] + 20000 < Date.now()) {
+      return true
     }
-    return true
+    return false
   }
   // if user is unkown, cache user and current timestamp and move on
-  userCache[user] = Date.now()
+  userCache[userReferer] = Date.now()
   return true
 }
 
@@ -133,11 +136,13 @@ module.exports = {
   async createNft(ctx) {
     try {
       const user = ctx.request.header.referer
+      // cache user or tell to wait
       const runProcess = cacheUser(user)
 
       if (runProcess) {
         console.log("***** building config*****")
         const config = await buildConfig()
+        ctx.body = "building configuration"
 
         console.log("***** config built *****")
         await getNftBaseAssets(config)
@@ -152,7 +157,7 @@ module.exports = {
 
         ctx.body = await uploadAndMint(config, processedMetadata)
       } else {
-        ctx.body = "please wait 5 minutes before trying again"
+        ctx.body = "please wait 1 minute before trying again"
       }
     } catch (error) {
       console.log("ERROR", error)
