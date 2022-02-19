@@ -115,18 +115,23 @@ const uploadAndMint = async (config, metadata) => {
 const userCache = {}
 
 /**
- * Cache/debounce user as to limit interaction
+ * Cache user as to limit interaction
  * @param {String} userReferer
  * @return {Boolean}
  */
 const cacheUser = (userReferer) => {
+  console.log("> the time user generated:", userCache[userReferer])
+  console.log("> current time:", Date.now())
   if (userCache[userReferer]) {
     // if user has requested service within the last 10 minutes, return false
     if (userCache[userReferer] + 20000 < Date.now()) {
+      userCache[userReferer] = Date.now()
       return true
     }
+    console.log("> user has not waited enough time")
     return false
   }
+  console.log("> user is new, cache")
   // if user is unkown, cache user and current timestamp and move on
   userCache[userReferer] = Date.now()
   return true
