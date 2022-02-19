@@ -1,14 +1,3 @@
-const rarityDelimiter = "#"
-
-const preview_gif = {
-  numberOfImages: 5,
-  order: "ASC", // ASC, DESC, MIXED
-  repeat: 0,
-  quality: 100,
-  delay: 500,
-  imageName: "preview.gif",
-}
-
 const getLayerConfiguration = async (collectionName) => {
   const layers = await strapi.db.query("api::layer.layer").findMany({
     populate: true,
@@ -61,7 +50,6 @@ const buildConfig = async () => {
   const {
     collection,
     shuffle_layer_configurations,
-    description,
     debug_logs,
     width,
     height,
@@ -88,11 +76,12 @@ const buildConfig = async () => {
     extra_metadata,
     collection_name,
     project_url,
-    chain,
   } = config
   const collectionName = collection.Name
   const layerConfigurations = await getLayerConfiguration(collectionName)
   const backgroundBrightness = `${background_brightness.toString()}%`
+
+  const rarityDelimiter = "#"
 
   const format = {
     width,
@@ -105,6 +94,15 @@ const buildConfig = async () => {
     thumbWidth: 50,
     imageRatio: format.height / format.width,
     imageName: "preview.png",
+  }
+
+  const preview_gif = {
+    numberOfImages: 5,
+    order: "ASC", // ASC, DESC, MIXED
+    repeat: 0,
+    quality: 100,
+    delay: 500,
+    imageName: "preview.gif",
   }
 
   const gif = {
@@ -141,25 +139,23 @@ const buildConfig = async () => {
   const uniqueDnaTorrance = unique_dna_torrance
   const extraMetadata = extra_metadata
   return {
+    ...config,
     collection: collectionName,
-    chain,
-    description,
     namePrefix: collection_name,
-    description,
     baseUri: project_url,
-    layerConfigurations,
     shuffleLayerConfigurations: shuffle_layer_configurations,
     debugLogs: debug_logs,
-    format,
-    gif,
     text: textData,
-    pixelFormat,
     background: backgroundData,
-    extraMetadata,
-    rarityDelimiter,
+    format,
     uniqueDnaTorrance,
+    extraMetadata,
+    pixelFormat,
     preview,
     preview_gif,
+    gif,
+    layerConfigurations,
+    rarityDelimiter,
   }
 }
 
