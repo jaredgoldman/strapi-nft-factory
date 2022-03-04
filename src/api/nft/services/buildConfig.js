@@ -9,6 +9,7 @@ const getLayerConfiguration = async (collectionName) => {
       },
     },
   })
+
   try {
     const layersArr = layers.map((layer) => {
       return {
@@ -16,6 +17,7 @@ const getLayerConfiguration = async (collectionName) => {
         number: layer.layerOrder,
       }
     })
+
     const layersOrder = layersArr
       .sort((a, b) => a.number - b.number)
       .map((layer) => ({

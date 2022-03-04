@@ -39,13 +39,36 @@ const getAssetData = async (metadata) => {
  * @param {String} url
  * @param {String} fileName
  */
-const saveNftData = (url, fileName) => {
+const saveNftData = async (url, fileName, upload) => {
+  console.log("FILENAME", fileName)
   strapi.db.query("api::nft.nft").create({
     data: {
+      title: fileName,
       url,
-      fileName,
+      image: upload,
     },
   })
+}
+
+/**
+ * Uploads nft Asset to dataabase
+ * @param {String} nftDir``
+ */
+saveAssetLocally = async (nftDir) => {
+  const name = path.basename(nftDir)
+  const buffer = fs.statSync(nftDir)
+  const upload = await strapi.plugins.upload.services.upload.upload({
+    data: {
+      path: "images",
+    },
+    files: {
+      path: nftDir,
+      name: name,
+      type: mime.lookup(nftDir),
+      size: buffer.size,
+    },
+  })
+  return upload
 }
 
 /**
@@ -81,24 +104,10 @@ const uploadAndMint = async (config, metadata) => {
 
       const assetId = await mintNft(url, assetMetadata)
 
-      console.log("***** saving nft info locally *****")
-      saveNftData(url, fileName)
-
       if (saveAsset) {
         console.log("***** nft minted - saving to database *****")
-        const name = path.basename(nftDir)
-        const buffer = fs.statSync(nftDir)
-        await strapi.plugins.upload.services.upload.upload({
-          data: {
-            path: "images",
-          },
-          files: {
-            path: nftDir,
-            name: name,
-            type: mime.lookup(nftDir),
-            size: buffer.size,
-          },
-        })
+        const upload = await saveAssetLocally(nftDir)
+        await saveNftData(url, fileName, upload)
       }
 
       metadataArr.push({
@@ -143,11 +152,10 @@ module.exports = {
       const runProcess = cacheUser(user)
 
       if (runProcess) {
-        // console.log("***** building config*****")
+        console.log("***** building config*****")
         const config = await buildConfig()
-        ctx.body = "building configuration"
 
-        // console.log("***** config built *****")
+        console.log("***** config built *****")
         await getNftBaseAssets(config)
         // Wait until layers are created before proceeding
         await wait(1000)

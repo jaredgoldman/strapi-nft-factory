@@ -290,10 +290,6 @@ const generateNfts = async (config) => {
     return randNum.join(DNA_DELIMITER)
   }
 
-  // const writeMetaData = (_data) => {
-  //   fs.writeFileSync(`${buildDir}/json/_metadata.json`, _data)
-  // }
-
   const saveMetaDataSingleFile = (_editionCount) => {
     let metadata = metadataList.find((meta) => meta.edition == _editionCount)
     debugLogs

@@ -1,11 +1,8 @@
 const algosdk = require("algosdk")
-const fs = require("fs")
-const path = require("path")
 const PROSPECTORS_MNEMONIC = process.env.PROSPECTORS_MNEMONIC
 const PURESTAKE_API = process.env.PURESTAKE_API
 const ALGO_NODE = process.env.ALGO_NODE
 const { waitForConfirmation } = require("../../../utils/helpers")
-const logDir = path.join(__dirname, "../../../../logs/error.json")
 
 const mintNft = async (url, metadata) => {
   try {
@@ -57,9 +54,6 @@ const mintNft = async (url, metadata) => {
     return assetID
   } catch (error) {
     console.log("ERROR", error)
-    fs.writeFileSync(logDir, error, (err) => {
-      if (err) console.log(err)
-    })
   }
 }
 
