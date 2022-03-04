@@ -15,7 +15,7 @@ const uploadNft = async (metadata, dir, fileName) => {
       }),
     })
   } catch (error) {
-    console.log(error)
+    console.log("IFPS ERROR", error.response.data)
   }
 }
 

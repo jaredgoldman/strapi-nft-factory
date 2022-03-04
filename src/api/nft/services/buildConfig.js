@@ -9,7 +9,6 @@ const getLayerConfiguration = async (collectionName) => {
       },
     },
   })
-  const growEditionSizeTo = 1
   try {
     const layersArr = layers.map((layer) => {
       return {
@@ -23,7 +22,7 @@ const getLayerConfiguration = async (collectionName) => {
         name: layer.name,
       }))
 
-    return [{ growEditionSizeTo, layersOrder }]
+    return layersOrder
   } catch (error) {
     console.log(error)
   }
@@ -76,9 +75,10 @@ const buildConfig = async () => {
     extra_metadata,
     collection_name,
     project_url,
+    editions,
   } = config
   const collectionName = collection.Name
-  const layerConfigurations = await getLayerConfiguration(collectionName)
+  const layersOrder = await getLayerConfiguration(collectionName)
   const backgroundBrightness = `${background_brightness.toString()}%`
 
   const rarityDelimiter = "#"
@@ -88,6 +88,13 @@ const buildConfig = async () => {
     height,
     smoothing,
   }
+
+  const layerConfigurations = [
+    {
+      growEditionSizeTo: editions,
+      layersOrder,
+    },
+  ]
 
   const preview = {
     thumbPerRow: 5,
