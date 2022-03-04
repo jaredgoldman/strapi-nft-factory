@@ -153,6 +153,11 @@
     "save_asset": {
       "type": "boolean",
       "default": false
+    },
+    "editions": {
+      "type": "integer",
+      "required": true,
+      "unique": false
     }
   }
 }

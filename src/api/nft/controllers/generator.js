@@ -62,9 +62,9 @@ const uploadAndMint = async (config, metadata) => {
     })
 
     await asyncForEach(nfts, async (fileName, i) => {
+      console.log(`uploading and minting edition ${i + 1}`)
       const nftDir = path.join(buildDir, fileName)
       const assetMetadata = metadata[i]
-
       // upload each nft
       console.log("***** uploading to ipfs *****")
       const ifpsMetadata = await uploadNft(assetMetadata, nftDir, fileName)
@@ -74,11 +74,12 @@ const uploadAndMint = async (config, metadata) => {
       const { url } = await getAssetData(ifpsMetadata)
 
       if (!url) {
-        // TODO - throw error as dweb isn't working
+        throw new Error("Error uploading to ifps")
       }
       // // mint nft with data
       console.log("***** minting nft *****")
-      const assetId = await mintNft(url, metadata)
+
+      const assetId = await mintNft(url, assetMetadata)
 
       console.log("***** saving nft info locally *****")
       saveNftData(url, fileName)
@@ -107,8 +108,9 @@ const uploadAndMint = async (config, metadata) => {
     })
     console.log("***** returning data *****")
     return metadataArr
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log("ERROR")
+    // console.log("ERROR", error.response.data)
   }
 }
 
@@ -120,18 +122,14 @@ const userCache = {}
  * @return {Boolean}
  */
 const cacheUser = (userReferer) => {
-  console.log("> the time user generated:", userCache[userReferer])
-  console.log("> current time:", Date.now())
   if (userCache[userReferer]) {
     // if user has requested service within the last 10 minutes, return false
     if (userCache[userReferer] + 20000 < Date.now()) {
       userCache[userReferer] = Date.now()
       return true
     }
-    console.log("> user has not waited enough time")
     return false
   }
-  console.log("> user is new, cache")
   // if user is unkown, cache user and current timestamp and move on
   userCache[userReferer] = Date.now()
   return true
@@ -145,11 +143,11 @@ module.exports = {
       const runProcess = cacheUser(user)
 
       if (runProcess) {
-        console.log("***** building config*****")
+        // console.log("***** building config*****")
         const config = await buildConfig()
         ctx.body = "building configuration"
 
-        console.log("***** config built *****")
+        // console.log("***** config built *****")
         await getNftBaseAssets(config)
         // Wait until layers are created before proceeding
         await wait(1000)
