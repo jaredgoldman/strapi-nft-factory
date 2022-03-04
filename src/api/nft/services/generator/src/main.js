@@ -10,6 +10,7 @@ const layersDir = path.join(__dirname, "../../../../../../.tmp/layers")
 
 const generateNfts = async (config) => {
   const {
+    collection,
     namePrefix,
     description,
     baseUri,
@@ -120,7 +121,7 @@ const generateNfts = async (config) => {
 
   const saveImage = (_editionCount) => {
     fs.writeFileSync(
-      `${buildDir}/images/${_editionCount}.png`,
+      `${buildDir}/images/${collection}-${_editionCount}.png`,
       canvas.toBuffer("image/png")
     )
   }
