@@ -64,7 +64,8 @@ const uploadAndMint = async (config, metadata) => {
         console.log("***** retreiving asset source *****")
         const { cid } = await getAssetData(ifpsMetadata)
         const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cid}`
-        const url = `ifps://${cid}`
+        const url = `ipfs://${cid}`
+        console.log("URL", url)
 
         console.log("***** minting nft *****")
         const assetId = await mintNft(url, assetMetadata, editionNum)
