@@ -10,7 +10,7 @@ const { uploadNft } = require("../services/uploadNft")
 const { mintNft } = require("../services/mintNft")
 const { processMetadata } = require("../services/processMetadata")
 const { saveAssetToMediaLibarary, saveNftData } = require("../services/saveNft")
-const e = require("cors")
+const IPFS_GATEWAY = process.env.IPFS_GATEWAY
 
 const buildDir = path.join(__dirname, "../../../../.tmp/build/images")
 
@@ -22,7 +22,7 @@ const buildDir = path.join(__dirname, "../../../../.tmp/build/images")
 const getAssetData = async (metadata) => {
   try {
     const { data } = await axios.get(
-      `https://a.mypinata.cloud/ipfs/${metadata.ipnft}/metadata.json`
+      `https://${IPFS_GATEWAY}/ipfs/${metadata.ipnft}/metadata.json`
     )
 
     return {
@@ -62,7 +62,7 @@ const uploadAndMint = async (config, metadata) => {
         // get asset url1
         console.log("***** retreiving asset source *****")
         const { cid } = await getAssetData(ifpsMetadata)
-        const httpUrl = `https://a.mypinata.cloud/ipfs/${cid}`
+        const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cid}`
         const url = `ifps://${cid}`
 
         console.log("***** minting nft *****")

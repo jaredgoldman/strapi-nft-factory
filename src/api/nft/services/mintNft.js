@@ -5,7 +5,6 @@ const ALGO_NODE = process.env.ALGO_NODE
 const { waitForConfirmation } = require("../../../utils/helpers")
 
 const mintNft = async (url, metadata) => {
-  console.log("METADATA", metadata)
   try {
     const algodToken = {
       "X-API-Key": PURESTAKE_API,
