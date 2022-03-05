@@ -68,7 +68,7 @@ const uploadAndMint = async (config, metadata) => {
 
         console.log(`uploading and minting edition ${editionNum}`)
         const nftDir = path.join(buildDir, fileName)
-        const assetMetadata = { fileName, ...metadata[i] }
+        const assetMetadata = metadata[i]
         // upload each nft
 
         console.log("***** uploading to ipfs *****")
@@ -80,7 +80,12 @@ const uploadAndMint = async (config, metadata) => {
         const url = `ipfs://${cid}`
 
         console.log("***** minting nft *****")
-        const assetId = await mintNft(url, assetMetadata, unitEditionName)
+        const assetId = await mintNft(
+          url,
+          assetMetadata,
+          unitEditionName,
+          fileName
+        )
 
         if (saveAsset) {
           console.log("***** nft minted - saving to database *****")
