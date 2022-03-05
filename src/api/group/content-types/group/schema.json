@@ -26,6 +26,11 @@
       "relation": "oneToOne",
       "target": "api::configuration.configuration",
       "mappedBy": "collection"
+    },
+    "collection": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::group.group"
     }
   }
 }

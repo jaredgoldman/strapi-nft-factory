@@ -25,6 +25,11 @@
     },
     "title": {
       "type": "string"
+    },
+    "collection": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::group.group"
     }
   }
 }

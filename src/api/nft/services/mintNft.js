@@ -5,6 +5,7 @@ const ALGO_NODE = process.env.ALGO_NODE
 const { waitForConfirmation } = require("../../../utils/helpers")
 
 const mintNft = async (url, metadata) => {
+  console.log("METADATA", metadata)
   try {
     const algodToken = {
       "X-API-Key": PURESTAKE_API,
@@ -14,14 +15,15 @@ const mintNft = async (url, metadata) => {
     const algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort)
     const { addr: address, sk } =
       algosdk.mnemonicToSecretKey(PROSPECTORS_MNEMONIC)
+
     const params = await algodClient.getTransactionParams().do()
     const enc = new TextEncoder()
     const note = enc.encode(JSON.stringify({ metadata }))
     const defaultFrozen = false
     const decimals = 0
     const totalIssuance = 1
-    const unitName = `test`
-    const assetName = `test`
+    const unitName = metadata.fileName
+    const assetName = metadata.fileName
     const assetMetadataHash = undefined
     const manager = address
     const reserve = address

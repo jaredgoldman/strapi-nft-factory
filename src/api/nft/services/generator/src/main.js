@@ -121,7 +121,7 @@ const generateNfts = async (config) => {
 
   const saveImage = (_editionCount) => {
     fs.writeFileSync(
-      `${buildDir}/images/${collection}-${_editionCount}.png`,
+      `${buildDir}/images/${collection}${_editionCount}.png`,
       canvas.toBuffer("image/png")
     )
   }
