@@ -6,6 +6,8 @@ const { waitForConfirmation } = require("../../../utils/helpers")
 
 const mintNft = async (url, metadata, unitName, fileName) => {
   const strippedFileName = fileName.split("-").join(" ").replace(".png", "")
+
+  console.log("METADATA", metadata)
   try {
     const algodToken = {
       "X-API-Key": PURESTAKE_API,
@@ -18,7 +20,7 @@ const mintNft = async (url, metadata, unitName, fileName) => {
 
     const params = await algodClient.getTransactionParams().do()
     const enc = new TextEncoder()
-    const note = enc.encode(JSON.stringify({ metadata }))
+    const note = enc.encode(JSON.stringify(metadata))
     const defaultFrozen = false
     const decimals = 0
     const totalIssuance = 1
