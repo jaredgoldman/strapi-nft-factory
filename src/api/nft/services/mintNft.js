@@ -4,7 +4,7 @@ const PURESTAKE_API = process.env.PURESTAKE_API
 const ALGO_NODE = process.env.ALGO_NODE
 const { waitForConfirmation } = require("../../../utils/helpers")
 
-const mintNft = async (url, metadata) => {
+const mintNft = async (url, metadata, unit) => {
   try {
     const algodToken = {
       "X-API-Key": PURESTAKE_API,
@@ -21,7 +21,7 @@ const mintNft = async (url, metadata) => {
     const defaultFrozen = false
     const decimals = 0
     const totalIssuance = 1
-    const unitName = metadata.fileName
+    const unitName = unit
     const assetName = metadata.fileName
     const assetMetadataHash = undefined
     const manager = address
