@@ -32,9 +32,9 @@ const generateNfts = async (config) => {
   const canvas = createCanvas(format.width, format.height)
   const ctx = canvas.getContext("2d")
   ctx.imageSmoothingEnabled = format.smoothing
-  var metadataList = []
-  var attributesList = []
-  var dnaList = new Set()
+  let metadataList = []
+  let attributesList = {}
+  let dnaList = new Set()
   const DNA_DELIMITER = "-"
   const HashlipsGiffer = require(`../modules/HashlipsGiffer`)
 
@@ -151,15 +151,13 @@ const generateNfts = async (config) => {
       compiler: "HashLips Art Engine",
     }
     metadataList.push(tempMetadata)
-    attributesList = []
+    attributesList = {}
   }
 
   const addAttributes = (_element) => {
     let selectedElement = _element.layer.selectedElement
-    attributesList.push({
-      // THIS IS ALOG FORMATING
-      [_element.layer.name]: selectedElement.name,
-    })
+    // THIS IS ALOG FORMATING
+    attributesList[_element.layer.name] = selectedElement.name
   }
 
   const loadLayerImg = async (_layer) => {
