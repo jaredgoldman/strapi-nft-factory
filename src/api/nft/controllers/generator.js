@@ -80,7 +80,7 @@ const uploadAndMint = async (config, metadata) => {
         const url = `ipfs://${cid}`
 
         console.log("***** minting nft *****")
-        const assetId = await mintNft(url, assetMetadata, unitName)
+        const assetId = await mintNft(url, assetMetadata, unitEditionName)
 
         if (saveAsset) {
           console.log("***** nft minted - saving to database *****")

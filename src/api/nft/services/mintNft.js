@@ -4,7 +4,7 @@ const PURESTAKE_API = process.env.PURESTAKE_API
 const ALGO_NODE = process.env.ALGO_NODE
 const { waitForConfirmation } = require("../../../utils/helpers")
 
-const mintNft = async (url, metadata, unit) => {
+const mintNft = async (url, metadata, unitName) => {
   const strippedFileName = metadata.fileName
     .split("-")
     .join(" ")
@@ -26,7 +26,6 @@ const mintNft = async (url, metadata, unit) => {
     const defaultFrozen = false
     const decimals = 0
     const totalIssuance = 1
-    const unitName = unit.toString()
     const assetName = strippedFileName
     const assetMetadataHash = undefined
     const manager = address
