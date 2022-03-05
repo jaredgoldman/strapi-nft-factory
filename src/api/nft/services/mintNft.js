@@ -21,7 +21,7 @@ const mintNft = async (url, metadata, unit) => {
     const defaultFrozen = false
     const decimals = 0
     const totalIssuance = 1
-    const unitName = unit
+    const unitName = unit.toString()
     const assetName = metadata.fileName
     const assetMetadataHash = undefined
     const manager = address
