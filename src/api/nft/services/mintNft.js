@@ -5,6 +5,11 @@ const ALGO_NODE = process.env.ALGO_NODE
 const { waitForConfirmation } = require("../../../utils/helpers")
 
 const mintNft = async (url, metadata, unit) => {
+  const strippedFileName = metadata.fileName
+    .split("-")
+    .join(" ")
+    .replace(".png", "")
+
   try {
     const algodToken = {
       "X-API-Key": PURESTAKE_API,
@@ -22,7 +27,7 @@ const mintNft = async (url, metadata, unit) => {
     const decimals = 0
     const totalIssuance = 1
     const unitName = unit.toString()
-    const assetName = metadata.fileName
+    const assetName = strippedFileName
     const assetMetadataHash = undefined
     const manager = address
     const reserve = address

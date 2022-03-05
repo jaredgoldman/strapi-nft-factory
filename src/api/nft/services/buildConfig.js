@@ -78,6 +78,7 @@ const buildConfig = async () => {
     collection_name,
     project_url,
     editions,
+    unit_name,
   } = config
   const collectionName = collection.Name
   const layersOrder = await getLayerConfiguration(collectionName)
@@ -156,6 +157,7 @@ const buildConfig = async () => {
     debugLogs: debug_logs,
     text: textData,
     background: backgroundData,
+    unitName: unit_name,
     format,
     uniqueDnaTorrance,
     extraMetadata,

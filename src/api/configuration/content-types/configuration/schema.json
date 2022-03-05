@@ -158,6 +158,10 @@
       "type": "integer",
       "required": true,
       "unique": false
+    },
+    "unit_name": {
+      "type": "string",
+      "required": true
     }
   }
 }
