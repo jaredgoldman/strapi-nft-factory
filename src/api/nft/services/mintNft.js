@@ -6,8 +6,6 @@ const { waitForConfirmation } = require("../../../utils/helpers")
 
 const mintNft = async (url, metadata, unitName, fileName) => {
   const strippedFileName = fileName.split("-").join(" ").replace(".png", "")
-
-  console.log("METADATA", metadata)
   try {
     const algodToken = {
       "X-API-Key": PURESTAKE_API,
