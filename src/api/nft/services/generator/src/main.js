@@ -158,7 +158,7 @@ const generateNfts = async (config) => {
     let selectedElement = _element.layer.selectedElement
     attributesList.push({
       // THIS IS ALOG FORMATING
-      [_element.layer.name]: [selectedElement.name],
+      [_element.layer.name]: selectedElement.name,
     })
   }
 
