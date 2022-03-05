@@ -9,7 +9,8 @@ const processMetadata = (config, metadataArr) => {
         standard: "arc69",
         description: assetMetadata.description,
         external_url: project_url,
-        attributes: assetMetadata.attributes,
+        mime_type: "image/png",
+        properties: assetMetadata.attributes,
       }
     }
   })
