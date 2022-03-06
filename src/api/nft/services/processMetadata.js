@@ -6,6 +6,7 @@ const processMetadata = (config, metadataArr) => {
   const processedMetadata = metadataArr.map((assetMetadata) => {
     if (network === NETWORK.ALGO) {
       return {
+        fileName: assetMetadata.name,
         standard: "arc69",
         description: assetMetadata.description,
         external_url: project_url,

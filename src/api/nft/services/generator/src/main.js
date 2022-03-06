@@ -140,7 +140,7 @@ const generateNfts = async (config) => {
   const addMetadata = (_dna, _edition) => {
     let dateTime = Date.now()
     const tempMetadata = {
-      name: `${namePrefix} #${_edition}`,
+      name: `${namePrefix} ${_edition}`,
       description: description,
       image: `${baseUri}/${_edition}.png`,
       dna: sha1(_dna),

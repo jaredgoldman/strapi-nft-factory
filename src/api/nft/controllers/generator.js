@@ -165,6 +165,7 @@ const mintNftProcess = async (cids, metadata, unitName, error = false) => {
     const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cid}`
     const url = `ipfs://${cid}`
     const assetMetadata = metadata[i]
+    console.log("assetMetaData", assetMetadata)
     const fileName = cid.split("/")[1]
     const editionNum = i + 1
     const unitEditionName = transformUnitName(unitName, editionNum)
