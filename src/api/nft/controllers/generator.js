@@ -89,7 +89,7 @@ const transformUnitName = (unitName, editionNum) => {
 
 /**
  * Uploads and mints each NFT
- * @param {Array} metadata``
+ * @param {Array} metadata
  * @return {Array} metadataArr
  */
 const uploadAndMintProcess = async (config, metadata) => {
@@ -109,9 +109,10 @@ const uploadAndMintProcess = async (config, metadata) => {
 
   const assetUrls = await retreiveAssetProcess(ipfsMetadata)
 
-  const mintedNfts = await mintNftProcess(assetUrls, metadata, unitName)
-
-  return mintedNfts
+  if (assetUrls) {
+    const mintedNfts = await mintNftProcess(assetUrls, metadata, unitName)
+    return mintedNfts
+  }
 }
 
 const uploadProcess = async (nfts, metadata) => {
@@ -138,6 +139,7 @@ const retreiveAssetProcess = async (ipnfts, error = false) => {
     assetUrlArray.push(assetUrl)
   })
   if (assetErrorArray.length) {
+    // add recursive case to deal with errors - mainly network timeouts
     error = true
     console.log("handling asset source errors")
     const erroredIpnfts = assetErrorArray.map((index) => ipnfts[index])
@@ -174,6 +176,7 @@ const mintNftProcess = async (cids, metadata, unitName, error = false) => {
     })
   })
   if (mintErrorArray.length) {
+    // add recursive case to deal with errors - mainly network timeouts
     console.log("handling minting errors")
     const erroredCids = mintErrorArray.map((index) => cids[index])
     const erroredMetadata = mintErrorArray.map((index) => metadata[index])
@@ -231,6 +234,8 @@ module.exports = {
 
         console.log("***** generating nft(s) *****")
         const metadataArr = await generateNfts(config)
+
+        console.log("metadata array", metadataArr)
 
         console.log("***** processing metadata *****")
         const processedMetadata = processMetadata(config, metadataArr)
