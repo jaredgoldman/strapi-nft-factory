@@ -60,9 +60,16 @@ const uploadAndMint = async (config, metadata) => {
       console.log(err)
     })
 
+    // sort nft array
+    nfts.sort((a, b) => {
+      return (
+        Number(a.slice(8).replace(".png", "")) -
+        Number(b.slice(8).replace(".png", ""))
+      )
+    })
+
     await asyncForEach(nfts, async (fileName, i) => {
       const editionNum = i + 1
-      console.log("edition number", editionNum)
       const unitEditionName = transformUnitName(unitName, editionNum)
 
       console.log(`uploading and minting edition ${editionNum}`)
