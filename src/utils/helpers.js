@@ -4,10 +4,6 @@ const asyncForEach = async (array, callback) => {
     try {
       await callback(array[index], index, array)
     } catch (error) {
-      // Let's have some standards here folks
-      if (errorArray.length > 100) {
-        break
-      }
       console.log("error - continuing", index)
       errorArray.push(index)
       continue
