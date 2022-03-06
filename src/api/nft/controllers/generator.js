@@ -35,6 +35,12 @@ const getAssetData = async (metadata) => {
   }
 }
 
+/**
+ * Formats unit numbering
+ * @param {String} unitName
+ * @param {Number} editionNum
+ * @return {String} transformedUnitName
+ */
 const transformUnitName = (unitName, editionNum) => {
   if (editionNum < 10) {
     return `${unitName}00${editionNum.toString()}`
@@ -45,71 +51,67 @@ const transformUnitName = (unitName, editionNum) => {
   return `${unitName}${editionNum.toString()}`
 }
 
+const uploadAndMint = async (nfts, config, metadata) => {
+  const metadataArr = []
+  const { save_asset: saveAsset, collection, unitName } = config
+
+  const errorArray = await asyncForEach(nfts, async (fileName, i) => {
+    const editionNum = i + 1
+    const unitEditionName = transformUnitName(unitName, editionNum)
+
+    console.log(`uploading and minting edition ${editionNum}`)
+    const nftDir = path.join(buildDir, fileName)
+    const assetMetadata = metadata[i]
+
+    console.log("***** uploading to ipfs *****")
+    const ifpsMetadata = await uploadNft(assetMetadata, nftDir, fileName)
+
+    console.log("***** retreiving asset source *****")
+    const { cid } = await getAssetData(ifpsMetadata)
+    const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cid}`
+    const url = `ipfs://${cid}`
+
+    console.log("***** minting nft *****")
+    const assetId = await mintNft(url, assetMetadata, unitEditionName, fileName)
+
+    if (saveAsset) {
+      console.log("***** nft minted - saving to database *****")
+      const upload = await saveAssetToMediaLibarary(nftDir)
+      await saveNftData(url, fileName, upload, collection)
+    }
+    metadataArr.push({
+      httpUrl,
+      assetId,
+    })
+  })
+  if (errorArray.length) {
+    erroredNfts = errorArray.map((index) => nfts[index])
+    // recursively try uploading errored nfts again
+    uploadAndMint(erroredNfts, config)
+  } else {
+    return metadataArr
+  }
+}
+
 /**
  * Uploads and mints each NFT
  * @param {Array} metadata``
  * @return {Array} metadataArr
  */
-const uploadAndMint = async (config, metadata) => {
-  wait(1000)
-  const { save_asset: saveAsset, collection, unitName } = config
+const uploadAndMintProcess = async (config, metadata) => {
+  const nfts = fs.readdirSync(buildDir, (err) => {
+    console.log(err)
+  })
 
-  try {
-    const metadataArr = []
-    const nfts = fs.readdirSync(buildDir, (err) => {
-      console.log(err)
-    })
+  // sort nft array
+  nfts.sort((a, b) => {
+    return (
+      Number(a.slice(8).replace(".png", "")) -
+      Number(b.slice(8).replace(".png", ""))
+    )
+  })
 
-    // sort nft array
-    nfts.sort((a, b) => {
-      return (
-        Number(a.slice(8).replace(".png", "")) -
-        Number(b.slice(8).replace(".png", ""))
-      )
-    })
-
-    await asyncForEach(nfts, async (fileName, i) => {
-      const editionNum = i + 1
-      const unitEditionName = transformUnitName(unitName, editionNum)
-
-      console.log(`uploading and minting edition ${editionNum}`)
-      const nftDir = path.join(buildDir, fileName)
-      const assetMetadata = metadata[i]
-      // upload each nft
-
-      console.log("***** uploading to ipfs *****")
-      const ifpsMetadata = await uploadNft(assetMetadata, nftDir, fileName)
-      // get asset url1
-      console.log("***** retreiving asset source *****")
-      const { cid } = await getAssetData(ifpsMetadata)
-      const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cid}`
-      const url = `ipfs://${cid}`
-
-      console.log("***** minting nft *****")
-      const assetId = await mintNft(
-        url,
-        assetMetadata,
-        unitEditionName,
-        fileName
-      )
-
-      if (saveAsset) {
-        console.log("***** nft minted - saving to database *****")
-        const upload = await saveAssetToMediaLibarary(nftDir)
-        await saveNftData(url, fileName, upload, collection)
-      }
-      metadataArr.push({
-        httpUrl,
-        assetId,
-      })
-
-      // // mint nft with data
-    })
-    // console.log("***** returning data *****")
-    return metadataArr
-  } catch (error) {
-    console.log("ERROR", error)
-  }
+  return await uploadAndMint(nfts, config, metadata)
 }
 
 const userCache = {}
@@ -155,7 +157,7 @@ module.exports = {
         console.log("***** processing metadata *****")
         const processedMetadata = processMetadata(config, metadataArr)
 
-        ctx.body = await uploadAndMint(config, processedMetadata)
+        ctx.body = await uploadAndMintProcess(config, processedMetadata)
       } else {
         ctx.body = "please wait 1 minute before trying again"
       }

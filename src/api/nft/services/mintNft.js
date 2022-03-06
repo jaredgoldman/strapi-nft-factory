@@ -16,6 +16,7 @@ const mintNft = async (url, metadata, unitName, fileName) => {
     const { addr: address, sk } =
       algosdk.mnemonicToSecretKey(PROSPECTORS_MNEMONIC)
 
+    console.log("ADDR", address)
     const params = await algodClient.getTransactionParams().do()
     const enc = new TextEncoder()
     const note = enc.encode(JSON.stringify(metadata))

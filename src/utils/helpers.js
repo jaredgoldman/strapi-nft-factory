@@ -1,7 +1,19 @@
 const asyncForEach = async (array, callback) => {
+  const errorArray = []
   for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array)
+    try {
+      await callback(array[index], index, array)
+    } catch (error) {
+      // Let's have some standards here folks
+      if (errorArray.length > 100) {
+        break
+      }
+      console.log("error - continuing", index)
+      errorArray.push(index)
+      continue
+    }
   }
+  return errorArray
 }
 // wait for confirmation on the Algo blockchain
 const waitForConfirmation = async function (algodClient, txId, timeout) {
