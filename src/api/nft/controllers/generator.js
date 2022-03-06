@@ -36,14 +36,13 @@ const getAssetData = async (metadata) => {
 }
 
 const transformUnitName = (unitName, editionNum) => {
-  const editionString = editionNum.toString()
   if (editionNum < 10) {
-    return `${unitName}00${editionString}`
+    return `${unitName}00${editionNum.toString()}`
   }
-  if (editonNum < 100) {
-    return `${unitName}0${editionString}`
+  if (editionNum < 100) {
+    return `${unitName}0${editionNum.toString()}`
   }
-  return `${unitName}${editionString}`
+  return `${unitName}${editionNum.toString()}`
 }
 
 /**
@@ -62,41 +61,41 @@ const uploadAndMint = async (config, metadata) => {
     })
 
     await asyncForEach(nfts, async (fileName, i) => {
-      if (i < nfts.length) {
-        const editionNum = i + 1
-        const unitEditionName = transformUnitName(unitName, editionNum)
+      const editionNum = i + 1
+      console.log("edition number", editionNum)
+      const unitEditionName = transformUnitName(unitName, editionNum)
 
-        console.log(`uploading and minting edition ${editionNum}`)
-        const nftDir = path.join(buildDir, fileName)
-        const assetMetadata = metadata[i]
-        // upload each nft
+      console.log(`uploading and minting edition ${editionNum}`)
+      const nftDir = path.join(buildDir, fileName)
+      const assetMetadata = metadata[i]
+      // upload each nft
 
-        console.log("***** uploading to ipfs *****")
-        const ifpsMetadata = await uploadNft(assetMetadata, nftDir, fileName)
-        // get asset url1
-        console.log("***** retreiving asset source *****")
-        const { cid } = await getAssetData(ifpsMetadata)
-        const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cid}`
-        const url = `ipfs://${cid}`
+      console.log("***** uploading to ipfs *****")
+      const ifpsMetadata = await uploadNft(assetMetadata, nftDir, fileName)
+      // get asset url1
+      console.log("***** retreiving asset source *****")
+      const { cid } = await getAssetData(ifpsMetadata)
+      const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cid}`
+      const url = `ipfs://${cid}`
 
-        console.log("***** minting nft *****")
-        const assetId = await mintNft(
-          url,
-          assetMetadata,
-          unitEditionName,
-          fileName
-        )
+      console.log("***** minting nft *****")
+      const assetId = await mintNft(
+        url,
+        assetMetadata,
+        unitEditionName,
+        fileName
+      )
 
-        if (saveAsset) {
-          console.log("***** nft minted - saving to database *****")
-          const upload = await saveAssetToMediaLibarary(nftDir)
-          await saveNftData(url, fileName, upload, collection)
-        }
-        metadataArr.push({
-          httpUrl,
-          assetId,
-        })
+      if (saveAsset) {
+        console.log("***** nft minted - saving to database *****")
+        const upload = await saveAssetToMediaLibarary(nftDir)
+        await saveNftData(url, fileName, upload, collection)
       }
+      metadataArr.push({
+        httpUrl,
+        assetId,
+      })
+
       // // mint nft with data
     })
     // console.log("***** returning data *****")
