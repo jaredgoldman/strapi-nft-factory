@@ -139,9 +139,8 @@ const retreiveAssetProcess = async (ipnfts, error = false) => {
   })
   if (assetErrorArray.length) {
     error = true
-    console.log("there were errors")
+    console.log("handling asset source errors")
     const erroredIpnfts = assetErrorArray.map((index) => ipnfts[index])
-    console.log("ERRORED IPNFTS ARRAY", erroredIpnfts)
     retreiveAssetProcess(erroredIpnfts, true)
   } else {
     if (error) {
@@ -175,6 +174,7 @@ const mintNftProcess = async (cids, metadata, unitName, error = false) => {
     })
   })
   if (mintErrorArray.length) {
+    console.log("handling minting errors")
     const erroredCids = mintErrorArray.map((index) => cids[index])
     const erroredMetadata = mintErrorArray.map((index) => metadata[index])
     mintNftProcess(erroredCids, erroredMetadata, unitName, true)
