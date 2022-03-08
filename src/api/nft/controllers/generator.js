@@ -207,6 +207,8 @@ const cacheUser = (userReferer) => {
   return true
 }
 
+const sortAttributes = () => {}
+
 module.exports = {
   async createNft(ctx) {
     try {

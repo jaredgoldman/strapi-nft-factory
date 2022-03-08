@@ -14,6 +14,9 @@ const processMetadata = (config, metadataArr) => {
 
       const properties = {}
 
+      const editionNumber = attributes.edition
+      console.log("EDITION NUMBER", edition)
+
       attributes.forEach((attribute) => {
         const { trait_type, value } = attribute
         properties[trait_type] = value
