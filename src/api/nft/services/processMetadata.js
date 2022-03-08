@@ -12,12 +12,12 @@ const processMetadata = (config, metadataArr) => {
     if (network === NETWORK.ALGO) {
       const { name, description, attributes, edition } = assetMetadata
 
-      const properties = {}
+      // const properties = {}
 
-      attributes.forEach((attribute) => {
-        const { trait_type, value } = attribute
-        properties[trait_type] = value
-      })
+      // attributes.forEach((attribute) => {
+      //   const { trait_type, value } = attribute
+      //   properties[trait_type] = value
+      // })
 
       const unitName = transformAlgoUnitName(unit_name, edition)
 
@@ -29,7 +29,7 @@ const processMetadata = (config, metadataArr) => {
         description: description,
         external_url: project_url,
         mime_type: "image/png",
-        properties,
+        attributes,
       }
     }
   })
