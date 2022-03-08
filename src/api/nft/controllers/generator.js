@@ -145,6 +145,7 @@ const mintNftProcess = async (assetsData, metadata, error = false) => {
   const mintErrorArray = await asyncForEach(
     assetsData,
     async (assetData, i) => {
+      wait(2000)
       const { image, name } = assetData
       const assetMetadata = { ...metadata[i], ...assetData }
 
