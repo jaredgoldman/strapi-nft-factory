@@ -4,7 +4,8 @@ const asyncForEach = async (array, callback) => {
     try {
       await callback(array[index], index, array)
     } catch (error) {
-      console.log("error - continuing", index)
+      console.log("ERROR", error)
+      console.log("error on index", index)
       errorArray.push(index)
       continue
     }
@@ -65,8 +66,25 @@ const wait = async (duration) => {
   })
 }
 
+/**
+ * Formats unit numbering
+ * @param {String} unitName
+ * @param {Number} editionNum
+ * @return {String} transformedUnitName
+ */
+const transformAlgoUnitName = (unitName, editionNum) => {
+  if (editionNum < 10) {
+    return `${unitName}00${editionNum.toString()}`
+  }
+  if (editionNum < 100) {
+    return `${unitName}0${editionNum.toString()}`
+  }
+  return `${unitName}${editionNum.toString()}`
+}
+
 module.exports = {
   asyncForEach,
   waitForConfirmation,
   wait,
+  transformAlgoUnitName,
 }
