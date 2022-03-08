@@ -147,10 +147,10 @@ const generateNfts = async (config) => {
       edition: _edition,
       date: dateTime,
       ...extraMetadata,
-      attributes: attributesList,
+      attributes: { edition: _edition, attributesList },
       compiler: "HashLips Art Engine",
     }
-    metadataList.push({ edition: _edition, ...tempMetadata })
+    metadataList.push(tempMetadata)
     attributesList = []
   }
 
