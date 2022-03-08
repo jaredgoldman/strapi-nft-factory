@@ -155,12 +155,11 @@ const mintNftProcess = async (assetsData, metadata, error = false) => {
 
       const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cidWithImage}`
 
-      const assetId = await mintNft(assetMetadata)
+      const nftMetadata = await mintNft(assetMetadata)
 
       metadataArr.push({
         httpUrl,
-        assetId,
-        name,
+        ...nftMetadata,
       })
     }
   )

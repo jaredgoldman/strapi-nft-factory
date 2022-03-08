@@ -72,7 +72,7 @@ const mintNft = async (assetData) => {
     await waitForConfirmation(algodClient, tx.txId, 1000)
     const ptx = await algodClient.pendingTransactionInformation(tx.txId).do()
     assetID = ptx["asset-index"]
-    return assetID
+    return { assetID, ...metadata }
   } catch (error) {
     console.log("ERROR", error)
   }
