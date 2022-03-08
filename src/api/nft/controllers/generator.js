@@ -162,8 +162,11 @@ const mintNftProcess = async (assetsData, metadata, error = false) => {
         httpUrl,
         ...nftMetadata,
       })
+      return
     }
   )
+
+  // {"Background":"resistance army flag","Skin":"tan","Eyes":"blue","Ear":"none","Top":"chub","Mouth":"red lips"}
   // if (mintErrorArray.length) {
   //   // add recursive case to deal with errors - mainly network timeouts
   //   console.log("handling minting errors")
