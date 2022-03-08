@@ -146,7 +146,7 @@ const mintNftProcess = async (assetsData, metadata, error = false) => {
     assetsData,
     async (assetData, i) => {
       wait(2000)
-      const { image, name } = assetData
+      const { image } = assetData
       const assetMetadata = { ...metadata[i], ...assetData }
 
       const cidWithImage = image.slice(7)

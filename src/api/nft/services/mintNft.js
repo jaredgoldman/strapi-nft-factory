@@ -24,8 +24,6 @@ const mintNft = async (assetData) => {
     properties,
   }
 
-  console.log("PROPERTIES", metadata.properties)
-
   const url = image
 
   try {
