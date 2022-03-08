@@ -82,11 +82,10 @@ const uploadAndMintProcess = async (config, metadata) => {
     console.log(err)
   })
 
-  console.log(nfts[0].split("-")[1].replace(".png", ""))
   nfts.sort((a, b) => {
     return (
-      Number(a.slice(8).replace(".png", "")) -
-      Number(b.slice(8).replace(".png", ""))
+      Number(a.split("-")[1].replace(".png", "")) -
+      Number(b.split("-")[1].replace(".png", ""))
     )
   })
 
