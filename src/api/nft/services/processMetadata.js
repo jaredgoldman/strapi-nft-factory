@@ -29,7 +29,7 @@ const processMetadata = (config, metadataArr) => {
         description: description,
         external_url: project_url,
         mime_type: "image/png",
-        properties: attributes,
+        properties,
       }
     }
   })
