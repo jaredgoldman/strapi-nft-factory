@@ -70,7 +70,7 @@ const mintNft = async (assetData) => {
     const signedTxn = txn.signTxn(sk)
     const tx = await algodClient.sendRawTransaction(signedTxn).do()
     let assetID = null
-    await waitForConfirmation(algodClient, tx.txId, 5000)
+    await waitForConfirmation(algodClient, tx.txId)
     const ptx = await algodClient.pendingTransactionInformation(tx.txId).do()
     assetID = ptx["asset-index"]
     return { assetID, ...metadata }

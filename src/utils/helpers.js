@@ -13,7 +13,7 @@ const asyncForEach = async (array, callback) => {
   return errorArray
 }
 // wait for confirmation on the Algo blockchain
-const waitForConfirmation = (algodclient, txId) => {
+const waitForConfirmation = async (algodclient, txId) => {
   let response = await algodclient.status().do()
   let lastround = response["last-round"]
   while (true) {
