@@ -89,6 +89,8 @@ const uploadAndMintProcess = async (config, metadata) => {
     )
   })
 
+  console.log("nfts", nfts)
+
   const ipfsMetadata = await uploadProcess(nfts, metadata)
 
   const assetsData = await retreiveAssetProcess(ipfsMetadata)
