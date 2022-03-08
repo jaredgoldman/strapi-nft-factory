@@ -19,8 +19,6 @@ const processMetadata = (config, metadataArr) => {
         properties[trait_type] = value
       })
 
-      console.log("ATTRIBUTES", attributes)
-
       const unitName = transformAlgoUnitName(unit_name, edition)
 
       return {
