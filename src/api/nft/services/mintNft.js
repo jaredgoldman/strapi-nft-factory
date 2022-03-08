@@ -24,6 +24,8 @@ const mintNft = async (assetData) => {
     properties,
   }
 
+  console.log("PROPERTIES", metadata.properties)
+
   const url = image
 
   try {
@@ -39,7 +41,6 @@ const mintNft = async (assetData) => {
     const params = await algodClient.getTransactionParams().do()
     const enc = new TextEncoder()
     const note = enc.encode(JSON.stringify(metadata))
-    // const note = new Uint8Array(JSON.stringify(metadata))
     const defaultFrozen = false
     const decimals = 0
     const totalIssuance = 1
