@@ -416,7 +416,6 @@ const generateNfts = async (config) => {
 
   buildSetup()
   await startCreating()
-  console.log("metadata", metadataList)
   return metadataList
 }
 

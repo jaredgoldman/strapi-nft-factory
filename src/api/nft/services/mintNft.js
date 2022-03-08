@@ -37,8 +37,9 @@ const mintNft = async (assetData) => {
       algosdk.mnemonicToSecretKey(PROSPECTORS_MNEMONIC)
 
     const params = await algodClient.getTransactionParams().do()
-    const enc = new TextEncoder()
-    const note = enc.encode(JSON.stringify(metadata))
+    // const enc = new TextEncoder()
+    // const note = enc.encode(JSON.stringify(metadata))
+    const note = new Uint8Array(metadata)
     const defaultFrozen = false
     const decimals = 0
     const totalIssuance = 1
