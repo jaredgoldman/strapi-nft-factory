@@ -26,55 +26,11 @@ const getAssetData = async (ipnft) => {
   return { ipnft, ...data }
 }
 
-// const uploadAndMint = async (nfts, config, metadata) => {
-//   const metadataArr = []
-//   const { save_asset: saveAsset, collection, unitName } = config
-
-//   const errorArray = await asyncForEach(nfts, async (fileName, i) => {
-//     const editionNum = i + 1
-//     const unitEditionName = transformUnitName(unitName, editionNum)
-
-//     console.log(`uploading and minting edition ${editionNum}`)
-//     const nftDir = path.join(buildDir, fileName)
-//     const assetMetadata = metadata[i]
-
-//     console.log("***** uploading to ipfs *****")
-//     const ifpsMetadata = await uploadNft(assetMetadata, nftDir, fileName)
-
-//     console.log("***** retreiving asset source *****")
-//     const { cid } = await getAssetData(ifpsMetadata)
-//     const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cid}`
-//     const url = `ipfs://${cid}`
-
-//     console.log("***** minting nft *****")
-//     const assetId = await mintNft(url, assetMetadata, unitEditionName, fileName)
-
-//     if (saveAsset) {
-//       console.log("***** nft minted - saving to database *****")
-//       const upload = await saveAssetToMediaLibarary(nftDir)
-//       await saveNftData(url, fileName, upload, collection)
-//     }
-//     metadataArr.push({
-//       httpUrl,
-//       assetId,
-//     })
-//   })
-//   if (errorArray.length) {
-//     console.log("***** attempting again on errors *****")
-//     const erroredNfts = errorArray.map((index) => nfts[index])
-//     const erroredMetadata = errorArray.map((index) => metadata[index])
-//     // recursively try uploading errored nfts again
-//     uploadAndMint(erroredNfts, config, erroredMetadata)
-//   } else {
-//     console.log("***** success, no more errors ******")
-//     return metadataArr
-//   }
-// }
-
 /**
- * Uploads and mints each NFT
+ * Proceed with saving, retrieving, minting and saving assets locally
+ * @param {Object} config
  * @param {Array} metadata
- * @return {Array} metadataArr
+ * @returns {Array} mintedNfts
  */
 const uploadAndMintProcess = async (config, metadata) => {
   const { save_asset: saveAsset, collection } = config
@@ -103,6 +59,12 @@ const uploadAndMintProcess = async (config, metadata) => {
   return mintedNfts
 }
 
+/**
+ * Proceed with saving, retrieving, minting and saving assets locally
+ * @param {Array} assetsData
+ * @param {Array} nfts
+ * @param {String} collection
+ */
 const saveAssetLocallyProcess = async (assetsData, nfts, collection) => {
   await asyncForEach(nfts, async (fileName, i) => {
     const assetData = assetsData[i]
@@ -113,6 +75,12 @@ const saveAssetLocallyProcess = async (assetsData, nfts, collection) => {
   })
 }
 
+/**
+ * Save asset to media library and create instance in NFT collection
+ * @param {Array} nfts
+ * @param {Array} metadata
+ * @returns {Array} ifpsMetadataArray
+ */
 const uploadProcess = async (nfts, metadata) => {
   const ifpsMetadataArray = []
   const uploadErrorArray = await asyncForEach(nfts, async (fileName, i) => {
@@ -129,6 +97,12 @@ const uploadProcess = async (nfts, metadata) => {
   }
 }
 
+/**
+ * Retreive asset image link from IPFS gateway
+ * @param {Array} ipnfts
+ * @param {Boolean} error
+ * @returns {Array} assetUrlArray
+ */
 const retreiveAssetProcess = async (ipnfts, error = false) => {
   const assetUrlArray = []
   const assetErrorArray = await asyncForEach(ipnfts, async (ipnft, i) => {
@@ -157,6 +131,13 @@ const retreiveAssetProcess = async (ipnfts, error = false) => {
   }
 }
 
+/**
+ * Mint each nft on desired blockchain
+ * @param {Array} assetsData
+ * @param {Array} metaData
+ * @param {Boolean} error
+ * @return {Array} metadataArr
+ */
 const mintNftProcess = async (assetsData, metadata, error = false) => {
   const metadataArr = []
   await asyncForEach(assetsData, async (assetData, i) => {
