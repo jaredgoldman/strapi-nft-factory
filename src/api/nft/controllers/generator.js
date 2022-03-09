@@ -162,7 +162,6 @@ const mintNftProcess = async (assetsData, metadata, error = false) => {
         httpUrl,
         ...nftMetadata,
       })
-      return
     }
   )
 
@@ -206,8 +205,6 @@ const cacheUser = (userReferer) => {
   userCache[userReferer] = Date.now()
   return true
 }
-
-const sortAttributes = () => {}
 
 module.exports = {
   async createNft(ctx) {
