@@ -77,7 +77,7 @@ const getAssetData = async (ipnft) => {
  * @return {Array} metadataArr
  */
 const uploadAndMintProcess = async (config, metadata) => {
-  // const { save_asset: saveAsset, collection } = config
+  const { save_asset: saveAsset, collection } = config
   const nfts = fs.readdirSync(buildDir, (err) => {
     console.log(err)
   })
@@ -94,7 +94,23 @@ const uploadAndMintProcess = async (config, metadata) => {
   const assetsData = await retreiveAssetProcess(ipfsMetadata)
 
   const mintedNfts = await mintNftProcess(assetsData, metadata)
+
+  if (saveAsset) {
+    console.log("***** saving asset locally *****")
+    saveAssetLocallyProcess(assetsData, nfts, collection)
+  }
+
   return mintedNfts
+}
+
+const saveAssetLocallyProcess = async (assetsData, nfts, collection) => {
+  await asyncForEach(nfts, async (fileName, i) => {
+    const assetData = assetsData[i]
+    const { image } = assetData
+    const nftPath = path.join(buildDir, fileName)
+    const upload = await saveAssetToMediaLibarary(nftPath)
+    saveNftData(image, fileName, upload, collection)
+  })
 }
 
 const uploadProcess = async (nfts, metadata) => {
@@ -122,6 +138,7 @@ const retreiveAssetProcess = async (ipnfts, error = false) => {
   })
   if (assetErrorArray.length) {
     // add recursive case to deal with errors - mainly network timeouts
+    console.log("ERRORED ARRAY", assetErrorArray)
     error = true
     console.log("handling asset source errors")
     const erroredIpnfts = assetErrorArray.map((index) => ipnfts[index])
@@ -142,46 +159,25 @@ const retreiveAssetProcess = async (ipnfts, error = false) => {
 
 const mintNftProcess = async (assetsData, metadata, error = false) => {
   const metadataArr = []
-  const mintErrorArray = await asyncForEach(
-    assetsData,
-    async (assetData, i) => {
-      wait(2000)
-      const { image } = assetData
-      const assetMetadata = { ...metadata[i], ...assetData }
+  await asyncForEach(assetsData, async (assetData, i) => {
+    const { image } = assetData
 
-      const cidWithImage = image.slice(7)
+    const assetMetadata = { ...metadata[i], ...assetData }
 
-      const editionNum = i + 1
-      console.log(`minting edition ${editionNum}`)
+    const cidWithImage = image.slice(7)
 
-      const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cidWithImage}`
+    const editionNum = i + 1
+    console.log(`minting edition ${editionNum}`)
 
-      const nftMetadata = await mintNft(assetMetadata)
+    const httpUrl = `https://${IPFS_GATEWAY}/ipfs/${cidWithImage}`
 
-      metadataArr.push({
-        httpUrl,
-        ...nftMetadata,
-      })
-    }
-  )
+    const nftMetadata = await mintNft(assetMetadata)
 
-  // {"Background":"resistance army flag","Skin":"tan","Eyes":"blue","Ear":"none","Top":"chub","Mouth":"red lips"}
-  // if (mintErrorArray.length) {
-  //   // add recursive case to deal with errors - mainly network timeouts
-  //   console.log("handling minting errors")
-  //   const erroredCids = mintErrorArray.map((index) => cids[index])
-  //   const erroredMetadata = mintErrorArray.map((index) => metadata[index])
-  //   mintNftProcess(erroredCids, erroredMetadata, unitName, true)
-  // } else {
-  //   if (error) {
-  //     metadata.sort((a, b) => {
-  //       const aString = a.split("-")[1]
-  //       const aNum = Number(aString.replace(".png", ""))
-  //       const bString = b.split("-")[1]
-  //       const bNum = Number(bString.replace(".png", ""))
-  //       return aNum - bNum
-  //     })
-  //   }
+    metadataArr.push({
+      httpUrl,
+      ...nftMetadata,
+    })
+  })
   return metadataArr
 }
 

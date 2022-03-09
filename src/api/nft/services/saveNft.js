@@ -4,19 +4,19 @@ const fs = require("fs")
 
 /**
  * Uploads nft Asset to strapi media library
- * @param {String} nftDir``
+ * @param {String} nftDir
  */
-saveAssetToMediaLibarary = async (nftDir) => {
-  const name = path.basename(nftDir)
-  const buffer = fs.statSync(nftDir)
+saveAssetToMediaLibarary = async (nftPath) => {
+  const name = path.basename(nftPath)
+  const buffer = fs.statSync(nftPath)
   const upload = await strapi.plugins.upload.services.upload.upload({
     data: {
       path: "images",
     },
     files: {
-      path: nftDir,
+      path: nftPath,
       name: name,
-      type: mime.lookup(nftDir),
+      type: mime.lookup(nftPath),
       size: buffer.size,
     },
   })
