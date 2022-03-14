@@ -2,9 +2,9 @@ const algosdk = require("algosdk")
 const PROSPECTORS_MNEMONIC = process.env.PROSPECTORS_MNEMONIC
 const PURESTAKE_API = process.env.PURESTAKE_API
 const ALGO_NODE = process.env.ALGO_NODE
-const { waitForConfirmation } = require("../../../utils/helpers")
+const { waitForConfirmation } = require("../../../../utils/helpers")
 
-const mintNft = async (assetData) => {
+const mintAlgoNft = async (assetData) => {
   const {
     fileName,
     unitName,
@@ -79,5 +79,5 @@ const mintNft = async (assetData) => {
 }
 
 module.exports = {
-  mintNft,
+  mintAlgoNft,
 }
